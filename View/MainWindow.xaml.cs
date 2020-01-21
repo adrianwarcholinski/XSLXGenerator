@@ -39,8 +39,8 @@ namespace View
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            // openFileDialog.DefaultExt = ".xsr";
-            // openFileDialog.Filter = "Pliki XSR (*.xsr)|*.xsr";
+            openFileDialog.DefaultExt = ".xsr";
+            openFileDialog.Filter = "Pliki XSR (*.xsr)|*.xsr";
 
             if (openFileDialog.ShowDialog() == true)
             {

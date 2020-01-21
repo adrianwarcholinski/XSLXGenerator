@@ -46,7 +46,7 @@ namespace ViewModel
         {
             string fileName = "";
             _selectedFile = Window.SelectFile(ref fileName);
-            SelectedFileName = fileName;
+            SelectedFileName = fileName.Replace("_", "__");
         }
 
         #region Private stuff
