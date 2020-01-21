@@ -4,8 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
+        xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         mc:Ignorable="d"
         Title="Generator arkuszy kalkulacyjnych" Height="300" Width="600">
+
+    <Window.DataContext>
+        <vm:MyViewModel/>
+    </Window.DataContext>
+
     <Grid Margin="-1,0,1,0" Height="300">
         <Label Content="Elementy" FontWeight="Bold" HorizontalAlignment="Left" Margin="49,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
         <RadioButton GroupName="Elements" IsChecked="True" Content="Śruby" HorizontalAlignment="Left" Margin="31,50,0,0" VerticalAlignment="Top"/>
@@ -19,10 +25,10 @@
         <RadioButton GroupName="ListType" Content="Materiałowa" HorizontalAlignment="Left" Margin="189,103,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="326,34,0,0" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Top" Width="238" Height="104"/>
         <Label Content="Dodatkowe uwagi (opcjonalnie):" FontWeight="Bold" HorizontalAlignment="Left" Margin="353,3,0,0" VerticalAlignment="Top"/>
-        <Button Content="Wybierz plik" HorizontalAlignment="Left" Margin="75,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
+        <Button Command="{Binding SelectFileCommand}" Content="Wybierz plik" HorizontalAlignment="Left" Margin="75,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
         <Button Content="Generuj" IsEnabled="True" HorizontalAlignment="Left" Margin="398,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
         <Label Content="Wybrany plik:" FontWeight="Bold" HorizontalAlignment="Left" Margin="20,218,0,0" VerticalAlignment="Top"/>
-        <Label Content="lista__wysylkowa.xsr" HorizontalAlignment="Left" Margin="114,218,0,0" VerticalAlignment="Top"/>
+        <Label Content="{Binding SelectedFileName}" HorizontalAlignment="Left" Margin="114,218,0,0" VerticalAlignment="Top"/>
         <Separator HorizontalAlignment="Left" Margin="-10,148,0,0" VerticalAlignment="Top" Height="32" Width="610"/>
     </Grid>
 </Window>
