@@ -1,0 +1,28 @@
+﻿<Window x:Class="View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:View"
+        mc:Ignorable="d"
+        Title="Generator arkuszy kalkulacyjnych" Height="300" Width="600">
+    <Grid Margin="-1,0,1,0" Height="300">
+        <Label Content="Elementy" FontWeight="Bold" HorizontalAlignment="Left" Margin="49,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
+        <RadioButton GroupName="Elements" IsChecked="True" Content="Śruby" HorizontalAlignment="Left" Margin="31,50,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="Elements" Content="Pręty" HorizontalAlignment="Left" Margin="31,75,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="Elements" Content="Kotwy" HorizontalAlignment="Left" Margin="31,100,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="Elements" Content="Konstrukcja główna" HorizontalAlignment="Left" Margin="31,125,0,0" VerticalAlignment="Top"/>
+
+        <Label Content="Rodzaj listy" FontWeight="Bold" HorizontalAlignment="Left" Margin="199,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
+        <RadioButton GroupName="ListType" IsChecked="True" Content="Wysyłkowa" HorizontalAlignment="Left" Margin="189,53,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="ListType" Content="Strukturalna" HorizontalAlignment="Left" Margin="189,78,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="ListType" Content="Materiałowa" HorizontalAlignment="Left" Margin="189,103,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="326,34,0,0" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Top" Width="238" Height="104"/>
+        <Label Content="Dodatkowe uwagi (opcjonalnie):" FontWeight="Bold" HorizontalAlignment="Left" Margin="353,3,0,0" VerticalAlignment="Top"/>
+        <Button Content="Wybierz plik" HorizontalAlignment="Left" Margin="75,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
+        <Button Content="Generuj" IsEnabled="True" HorizontalAlignment="Left" Margin="398,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
+        <Label Content="Wybrany plik:" FontWeight="Bold" HorizontalAlignment="Left" Margin="20,218,0,0" VerticalAlignment="Top"/>
+        <Label Content="lista__wysylkowa.xsr" HorizontalAlignment="Left" Margin="114,218,0,0" VerticalAlignment="Top"/>
+        <Separator HorizontalAlignment="Left" Margin="-10,148,0,0" VerticalAlignment="Top" Height="32" Width="610"/>
+    </Grid>
+</Window>
