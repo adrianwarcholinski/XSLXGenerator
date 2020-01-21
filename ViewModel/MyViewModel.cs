@@ -65,11 +65,11 @@ namespace ViewModel
             string fileName = "";
 
             Stream file = Window.SelectFile(ref fileName);
+
             if (file != null)
             {
                 _selectedFile = file;
                 SelectedFileName = fileName.Replace("_", "__");
-
             }
         }
 
