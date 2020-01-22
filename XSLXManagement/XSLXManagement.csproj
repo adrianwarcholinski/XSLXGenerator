@@ -5,9 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileManagement\FileManagement.csproj" />
+    <PackageReference Include="NPOI" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\XSLXManagement\XSLXManagement.csproj" />
   </ItemGroup>
 
 </Project>
