@@ -4,6 +4,6 @@ namespace ViewModel
 {
     public interface IWindow
     {
-        Stream SelectFile(ref string fileName);
+        string SelectFile(ref string fileName);
     }
 }

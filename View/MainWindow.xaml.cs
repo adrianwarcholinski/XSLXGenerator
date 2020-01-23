@@ -35,7 +35,7 @@ namespace View
             vm.Window = this;
         }
 
-        public Stream SelectFile(ref string fileName)
+        public string SelectFile(ref string fileName)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -45,7 +45,7 @@ namespace View
             if (openFileDialog.ShowDialog() == true)
             {
                 fileName = openFileDialog.SafeFileName;
-                return openFileDialog.OpenFile();
+                return openFileDialog.FileName;
             }
 
             return null;

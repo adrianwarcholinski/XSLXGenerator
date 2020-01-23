@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using FileManagement.Material;
+using Model.Material;
 
 namespace ViewModel
 {
@@ -18,6 +20,7 @@ namespace ViewModel
         #region Commands
 
         public ICommand SelectFileCommand { get; private set; }
+        public ICommand GenerateCommand { get; private set; }
 
         #endregion Commands
 
@@ -49,6 +52,7 @@ namespace ViewModel
         public MyViewModel()
         {
             SelectFileCommand = new Command(SelectFile);
+            GenerateCommand = new Command(Generate);
         }
 
         #region Raise PropertyChanged
@@ -64,13 +68,18 @@ namespace ViewModel
         {
             string fileName = "";
 
-            Stream file = Window.SelectFile(ref fileName);
+            _selectedFileFullPath = Window.SelectFile(ref fileName);
 
-            if (file != null)
+            if (_selectedFileFullPath != null)
             {
-                _selectedFile = file;
                 SelectedFileName = fileName.Replace("_", "__");
             }
+        }
+
+        public void Generate()
+        {
+            MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
+            Console.WriteLine(list);
         }
 
         #endregion Commands methods
@@ -78,8 +87,8 @@ namespace ViewModel
         #region Private stuff
 
         private string _selectedFileName;
-        private Stream _selectedFile;
         private bool _isActiveGenerateButton;
+        private string _selectedFileFullPath;
 
         #endregion Private stuff
     }

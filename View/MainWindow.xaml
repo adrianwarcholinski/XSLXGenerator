@@ -26,7 +26,7 @@
         <TextBox HorizontalAlignment="Left" Margin="326,34,0,0" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Top" Width="238" Height="104"/>
         <Label Content="Dodatkowe uwagi (opcjonalnie):" FontWeight="Bold" HorizontalAlignment="Left" Margin="353,3,0,0" VerticalAlignment="Top"/>
         <Button Command="{Binding SelectFileCommand}" Content="Wybierz plik" HorizontalAlignment="Left" Margin="75,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
-        <Button IsEnabled="{Binding IsActiveGenerateButton}"  Content="Generuj" HorizontalAlignment="Left" Margin="398,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
+        <Button IsEnabled="{Binding IsActiveGenerateButton}" Command="{Binding GenerateCommand}"  Content="Generuj" HorizontalAlignment="Left" Margin="398,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>
         <Label Content="Wybrany plik:" FontWeight="Bold" HorizontalAlignment="Left" Margin="20,218,0,0" VerticalAlignment="Top"/>
         <Label Content="{Binding SelectedFileName}" HorizontalAlignment="Left" Margin="114,218,0,0" VerticalAlignment="Top"/>
         <Separator HorizontalAlignment="Left" Margin="-10,148,0,0" VerticalAlignment="Top" Height="32" Width="610"/>

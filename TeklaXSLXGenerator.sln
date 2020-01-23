@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\View
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{55EF0854-396A-45DB-AC0A-6BB225112ED6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSLXManagement", "XSLXManagement\XSLXManagement.csproj", "{90D5428C-803C-47FA-9D96-5FB98117E5EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSLXManagement", "XSLXManagement\XSLXManagement.csproj", "{90D5428C-803C-47FA-9D96-5FB98117E5EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManagement", "FileManagement\FileManagement.csproj", "{012638E7-5312-45B5-9490-97032F079A8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileManagement", "FileManagement\FileManagement.csproj", "{012638E7-5312-45B5-9490-97032F079A8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
