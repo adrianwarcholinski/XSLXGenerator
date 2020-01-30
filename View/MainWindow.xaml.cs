@@ -35,7 +35,7 @@ namespace View
             vm.Window = this;
         }
 
-        public string SelectFile(ref string fileName)
+        public string SelectReadableFile(ref string fileName)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -46,6 +46,21 @@ namespace View
             {
                 fileName = openFileDialog.SafeFileName;
                 return openFileDialog.FileName;
+            }
+
+            return null;
+        }
+
+        public string SelectWritableFile()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.DefaultExt = ".xlsx";
+            saveFileDialog.Filter = "Arkusze XLSX (*.xlsx)|*.xlsx";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                return saveFileDialog.FileName;
             }
 
             return null;

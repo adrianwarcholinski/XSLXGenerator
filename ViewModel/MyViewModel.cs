@@ -27,10 +27,10 @@ namespace ViewModel
         #region  Properties
         public string SelectedFileName
         {
-            get => _selectedFileName;
+            get => _selectedSourceFileName;
             set
             {
-                _selectedFileName = value;
+                _selectedSourceFileName = value;
                 IsActiveGenerateButton = !string.IsNullOrEmpty(value);
                 RaisePropertyChanged();
             }
@@ -68,7 +68,7 @@ namespace ViewModel
         {
             string fileName = "";
 
-            _selectedFileFullPath = Window.SelectFile(ref fileName);
+            _selectedFileFullPath = Window.SelectReadableFile(ref fileName);
 
             if (_selectedFileFullPath != null)
             {
@@ -78,10 +78,12 @@ namespace ViewModel
 
         public void Generate()
         {
+            _selectedTargetPath = Window.SelectWritableFile();
+
             Task.Run(() =>
             {
                 MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
-                MaterialXLSXWriter.WriteMaterialList(SelectedFileName);
+                MaterialXLSXWriter.WriteMaterialList(_selectedTargetPath);
             });
         }
 
@@ -89,7 +91,8 @@ namespace ViewModel
 
         #region Private stuff
 
-        private string _selectedFileName;
+        private string _selectedSourceFileName;
+        private string _selectedTargetPath;
         private bool _isActiveGenerateButton;
         private string _selectedFileFullPath;
 
