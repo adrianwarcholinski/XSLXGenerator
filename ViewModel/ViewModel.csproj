@@ -7,7 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FileManagement\FileManagement.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\XSLXManagement\XSLXManagement.csproj" />
+    <ProjectReference Include="..\XSLXManagement\XLSXManagement.csproj" />
   </ItemGroup>
 
 </Project>

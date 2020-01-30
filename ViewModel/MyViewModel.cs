@@ -1,10 +1,10 @@
 ﻿using FileManagement.Material;
 using Model.Material;
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using XLSXManagement.Material;
 
 namespace ViewModel
 {
@@ -81,6 +81,7 @@ namespace ViewModel
             Task.Run(() =>
             {
                 MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
+                MaterialXLSXWriter.WriteMaterialList(SelectedFileName);
             });
         }
 
