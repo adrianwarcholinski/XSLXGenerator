@@ -7,9 +7,10 @@ namespace Model.Material
 {
     public class MaterialList
     {
-        private MaterialContentType _currentContentType;
+        private readonly MaterialContentType _currentContentType;
 
-        public MaterialHeader Header { get; private set; }
+        public MaterialHeader Header { get; }
+        public List<string> columnsNames { get; }
 
 
         public MaterialList(string content)
@@ -24,6 +25,7 @@ namespace Model.Material
                     case MaterialContentType.Header:
                         Header = new MaterialHeader(content);
                         break;
+                    
                 }
             }
 
@@ -42,19 +44,19 @@ namespace Model.Material
                 {
                     string[] twoChunks = chunksByHyphen[i].Split("=");
 
-                    string formattedFirstChunk = twoChunks[0] + '-';
-                    formattedFirstChunk = formattedFirstChunk.Trim();
+                    // string formattedFirstChunk = twoChunks[0] + '-';
+                    // formattedFirstChunk = formattedFirstChunk.Trim();
 
-                    string formattedSecondChunk = twoChunks.Last() + '=';
-                    formattedSecondChunk = formattedSecondChunk.Trim();
+                    // string formattedSecondChunk = twoChunks.Last() + '=';
+                    // formattedSecondChunk = formattedSecondChunk.Trim();
 
-                    chunksByEqualSign.Add(formattedFirstChunk);
-                    chunksByEqualSign.Add(formattedSecondChunk);
+                    chunksByEqualSign.Add(twoChunks.First());
+                    chunksByEqualSign.Add(twoChunks.Last());
                 }
                 else
                 {
-                    string formattedChunk = chunksByHyphen[i] + '-';
-                    chunksByEqualSign.Add(formattedChunk);
+                    // string formattedChunk = chunksByHyphen[i] + '-';
+                    chunksByEqualSign.Add(chunksByHyphen[i]);
                 }
             }
 
