@@ -12,9 +12,8 @@ namespace FileManagement.Material
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string content = File.ReadAllText(path, Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage));
-            string[] lines = content.Split("\n");
 
-            return new MaterialList(lines);
+            return new MaterialList(content);
         }
     }
 }

@@ -13,9 +13,11 @@ namespace Model.Material
         public string Project { get; private set; }
         public DateTime Date { get; private set; }
 
-        public MaterialHeader(string[] lines)
+        public MaterialHeader(string content)
         {
             string dateTimeString = "";
+
+            string[] lines = content.Split('\n');
 
             foreach (string line in lines)
             {

@@ -1,10 +1,9 @@
-﻿using System;
+﻿using FileManagement.Material;
+using Model.Material;
+using System;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using FileManagement.Material;
-using Model.Material;
 
 namespace ViewModel
 {
