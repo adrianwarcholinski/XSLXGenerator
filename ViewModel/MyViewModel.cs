@@ -3,6 +3,7 @@ using Model.Material;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ViewModel
@@ -77,8 +78,10 @@ namespace ViewModel
 
         public void Generate()
         {
-            MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
-            Console.WriteLine(list);
+            Task.Run(() =>
+            {
+                MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
+            });
         }
 
         #endregion Commands methods

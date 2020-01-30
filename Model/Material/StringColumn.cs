@@ -1,21 +1,34 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Material
 {
-    public class StringColumn : IColumn
+    public class StringColumn
     {
         public string Name { get; }
-        public ICollection<DataChunk> Data { get; }
+        public ICollection<DataChunk> Data { get; private set; }
 
         public StringColumn(string columnName)
         {
             Name = columnName;
-            Data = new List<DataChunk>();
+            InitData();
         }
 
-        public void AppendData(DataChunk chunk)
+        private void InitData()
         {
-            Data.Add(chunk);
+            Data = new List<DataChunk>(1);
+            Data.Add(new DataChunk());
+        }
+
+        public DataChunk GetLastChunk()
+        {
+            return Data.Last();
+        }
+
+        public void FinishChunk(string summary)
+        {
+            GetLastChunk().Summary = summary;
+            Data.Add(new DataChunk());
         }
     }
 }

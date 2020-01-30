@@ -7,11 +7,10 @@ namespace Model.Material
 {
     public class MaterialList
     {
-        private readonly MaterialContentType _currentContentType;
+        private readonly MaterialContentTypes _currentContentType;
 
         public MaterialHeader Header { get; }
-        public List<string> ColumnsNames { get; private set; }
-
+        public ICollection<StringColumn> Columns { get; private set; }
 
 
         public MaterialList(string content)
@@ -23,18 +22,31 @@ namespace Model.Material
                 _currentContentType = GetContentType(chunk);
                 switch (_currentContentType)
                 {
-                    case MaterialContentType.Header:
+                    case MaterialContentTypes.Header:
                     {
                         Header = new MaterialHeader(content);
                         break;
                     }
 
-                    case MaterialContentType.Columns:
+                    case MaterialContentTypes.Columns:
                     {
-                        if (ColumnsNames == null)
+                        if (Columns == null)
                         {
-                            InitColumnNames(chunk);
+                            InitColumns(chunk);
                         }
+
+                        break;
+                    }
+
+                    case MaterialContentTypes.Data:
+                    {
+                        AppendData(chunk);
+                        break;
+                    }
+
+                    case MaterialContentTypes.Summary:
+                    {
+                        AppendSummary(chunk);
                         break;
                     }
                 }
@@ -67,35 +79,35 @@ namespace Model.Material
             return chunksByEqualSign.ToArray();
         }
 
-        private MaterialContentType GetContentType(string content)
+        private MaterialContentTypes GetContentType(string content)
         {
             switch (_currentContentType)
             {
-                case MaterialContentType.Header:
-                    return MaterialContentType.Columns;
+                case MaterialContentTypes.Header:
+                    return MaterialContentTypes.Columns;
 
-                case MaterialContentType.Columns:
-                case MaterialContentType.Summary:
-                    return MaterialContentType.Data;
+                case MaterialContentTypes.Columns:
+                case MaterialContentTypes.Summary:
+                    return MaterialContentTypes.Data;
 
-                case MaterialContentType.Data:
+                case MaterialContentTypes.Data:
                 {
                     if (IsHeader(content))
                     {
-                        return MaterialContentType.Header;
+                        return MaterialContentTypes.Header;
                     }
 
-                    return MaterialContentType.Summary;
+                    return MaterialContentTypes.Summary;
                 }
 
                 default:
                 {
                     if (IsHeader(content))
                     {
-                        return MaterialContentType.Header;
+                        return MaterialContentTypes.Header;
                     }
 
-                    return MaterialContentType.None;
+                    return MaterialContentTypes.None;
                 }
             }
         }
@@ -105,16 +117,64 @@ namespace Model.Material
             return content.ToUpper().Contains("TEKLA");
         }
 
-        private void InitColumnNames(string content)
+        private void InitColumns(string content)
         {
-            ColumnsNames = new List<string>();
+            Columns = new List<StringColumn>();
             string[] columns = content.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             foreach (string column in columns)
             {
                 string trimedColumn = column.Trim();
                 if (!string.IsNullOrEmpty(trimedColumn))
                 {
-                    ColumnsNames.Add(trimedColumn);
+                    Columns.Add(new StringColumn(trimedColumn));
+                }
+            }
+        }
+
+        private void AppendData(string content)
+        {
+            string[] lines = content.Split("\n", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+                if (trimmedLine == "")
+                {
+                    continue;
+                }
+
+                string[] entries = line.Split("  ", StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < entries.Length; i++)
+                {
+                    string entry = entries[i];
+                    Columns.ElementAt(i).GetLastChunk().AddEntry(entry);
+                }
+            }
+        }
+
+        private void AppendSummary(string content)
+        {
+            string[] lines = content.Split("\n", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+                if (trimmedLine == "")
+                {
+                    continue;
+                }
+
+                string[] entries = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < Columns.Count; i++)
+                {
+                    if (i < Columns.Count - entries.Length)
+                    {
+                        Columns.ElementAt(i).FinishChunk("");
+                    }
+                    else
+                    {
+                        string entry = entries[i - Columns.Count + entries.Length];
+                        Columns.ElementAt(i).FinishChunk(entry);
+                    }
                 }
             }
         }

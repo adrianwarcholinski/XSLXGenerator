@@ -1,6 +1,6 @@
 ﻿namespace Model.Material
 {
-    public enum MaterialContentType
+    public enum MaterialContentTypes
     {
         None,
         Header,
