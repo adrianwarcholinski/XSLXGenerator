@@ -1,7 +1,7 @@
 ﻿namespace Model.Material
 {
-    public class Column
+    public interface IColumn
     {
-        
+        public string Name { get; }
     }
 }
