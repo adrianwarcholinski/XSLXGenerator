@@ -10,12 +10,13 @@ namespace Model.Material
         private readonly MaterialContentType _currentContentType;
 
         public MaterialHeader Header { get; }
-        public List<string> columnsNames { get; }
+        public List<string> ColumnsNames { get; private set; }
+
 
 
         public MaterialList(string content)
         {
-            string[] dataChunks = SplitData(content);
+            IEnumerable<string> dataChunks = SplitData(content);
 
             foreach (string chunk in dataChunks)
             {
@@ -23,16 +24,26 @@ namespace Model.Material
                 switch (_currentContentType)
                 {
                     case MaterialContentType.Header:
+                    {
                         Header = new MaterialHeader(content);
                         break;
-                    
+                    }
+
+                    case MaterialContentType.Columns:
+                    {
+                        if (ColumnsNames == null)
+                        {
+                            InitColumnNames(chunk);
+                        }
+                        break;
+                    }
                 }
             }
 
             Header = new MaterialHeader(content);
         }
 
-        private string[] SplitData(string data)
+        private IEnumerable<string> SplitData(string data)
         {
             string[] chunksByHyphen = data.Split("-", StringSplitOptions.RemoveEmptyEntries);
 
@@ -42,20 +53,13 @@ namespace Model.Material
             {
                 if (chunksByHyphen[i].Contains("="))
                 {
-                    string[] twoChunks = chunksByHyphen[i].Split("=");
-
-                    // string formattedFirstChunk = twoChunks[0] + '-';
-                    // formattedFirstChunk = formattedFirstChunk.Trim();
-
-                    // string formattedSecondChunk = twoChunks.Last() + '=';
-                    // formattedSecondChunk = formattedSecondChunk.Trim();
+                    string[] twoChunks = chunksByHyphen[i].Split("=", StringSplitOptions.RemoveEmptyEntries);
 
                     chunksByEqualSign.Add(twoChunks.First());
                     chunksByEqualSign.Add(twoChunks.Last());
                 }
                 else
                 {
-                    // string formattedChunk = chunksByHyphen[i] + '-';
                     chunksByEqualSign.Add(chunksByHyphen[i]);
                 }
             }
@@ -76,7 +80,7 @@ namespace Model.Material
 
                 case MaterialContentType.Data:
                 {
-                    if (isHeader(content))
+                    if (IsHeader(content))
                     {
                         return MaterialContentType.Header;
                     }
@@ -86,7 +90,7 @@ namespace Model.Material
 
                 default:
                 {
-                    if (isHeader(content))
+                    if (IsHeader(content))
                     {
                         return MaterialContentType.Header;
                     }
@@ -96,9 +100,23 @@ namespace Model.Material
             }
         }
 
-        private bool isHeader(string content)
+        private static bool IsHeader(string content)
         {
             return content.ToUpper().Contains("TEKLA");
+        }
+
+        private void InitColumnNames(string content)
+        {
+            ColumnsNames = new List<string>();
+            string[] columns = content.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string column in columns)
+            {
+                string trimedColumn = column.Trim();
+                if (!string.IsNullOrEmpty(trimedColumn))
+                {
+                    ColumnsNames.Add(trimedColumn);
+                }
+            }
         }
 
         public override string ToString()
