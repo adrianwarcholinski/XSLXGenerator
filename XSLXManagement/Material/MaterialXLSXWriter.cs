@@ -75,6 +75,7 @@ namespace XLSXManagement.Material
                 ICell cell = row.CreateCell(i);
                 cell.SetCellValue(_list.Columns.ElementAt(i).Name);
                 cell.CellStyle = GetCenterAlignmentStyle();
+
             }
         }
 
@@ -105,7 +106,7 @@ namespace XLSXManagement.Material
         private static IFont GetBoldFont()
         {
             IFont font = _workbook.CreateFont();
-            font.Boldweight = (short)FontBoldWeight.Bold;
+            font.Boldweight = (short) FontBoldWeight.Bold;
             font.FontHeightInPoints = 11;
             font.FontName = "Calibri";
 
@@ -119,6 +120,23 @@ namespace XLSXManagement.Material
 
         private static void WriteData()
         {
+            ICollection<StringColumn> columns = _list.Columns;
+            int numDataChunks = columns.First().Data.Count;
+            int numColumns = _list.Columns.Count;
+
+            for (int i = 0; i < numDataChunks; i++)
+            {
+                int rowCount = columns.First().Data.ElementAt(i).Entries.Count;
+                for (int r = 0; r < rowCount; r++)
+                {
+                    IRow row = GetNewRow();
+                    for (int c = 0; c < numColumns; c++)
+                    {
+                        ICell cell = row.CreateCell(c);
+                        cell.SetCellValue(columns.ElementAt(c).Data.ElementAt(i).Entries.ElementAt(r));
+                    }
+                }
+            }
         }
 
         private static void WriteWorkbook(string path)
