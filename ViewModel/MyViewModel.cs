@@ -83,7 +83,7 @@ namespace ViewModel
             Task.Run(() =>
             {
                 MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
-                MaterialXLSXWriter.WriteMaterialList(_selectedTargetPath);
+                MaterialXLSXWriter.WriteMaterialList(list, _selectedTargetPath);
             });
         }
 
