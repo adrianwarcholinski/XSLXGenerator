@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using Model.Material;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using NPOI.HSSF.Util;
+using NPOI.OpenXmlFormats.Spreadsheet;
 
 namespace XLSXManagement.Material
 {
@@ -20,6 +24,8 @@ namespace XLSXManagement.Material
         private static ICellStyle _borderStyle;
         private static ICellStyle _centerAlignmentStyle;
         private static ICellStyle _boldStyle;
+        private static ICellStyle _summaryStyle;
+        private static ICellStyle _finalSummaryStyle;
 
         public static void WriteMaterialList(MaterialList list, string path)
         {
@@ -56,6 +62,8 @@ namespace XLSXManagement.Material
             InitBorderStyle();
             InitCenterAlignmentStyle();
             InitBoldStyle();
+            InitSummaryStyle();
+            InitFinalSummaryStyle();
         }
 
         private static void InitBorderStyle()
@@ -82,6 +90,21 @@ namespace XLSXManagement.Material
             _boldStyle.SetFont(GetBoldFont());
         }
 
+        private static void InitSummaryStyle()
+        {
+            _summaryStyle = _workbook.CreateCellStyle();
+            _summaryStyle.CloneStyleFrom(_boldStyle);
+            _summaryStyle.FillForegroundColor = IndexedColors.Aqua.Index;
+            _summaryStyle.FillPattern = FillPattern.SolidForeground;
+        }
+
+        private static void InitFinalSummaryStyle()
+        {
+            _finalSummaryStyle = _workbook.CreateCellStyle();
+            _finalSummaryStyle.CloneStyleFrom(_summaryStyle);
+            _finalSummaryStyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
+        }
+
         private static void WriteColumnsNames()
         {
             IRow row = GetNewRow();
@@ -94,7 +117,6 @@ namespace XLSXManagement.Material
                 ICell cell = row.CreateCell(i);
                 cell.SetCellValue(_list.Columns.ElementAt(i).Name);
                 cell.CellStyle = _centerAlignmentStyle;
-
             }
         }
 
@@ -106,7 +128,7 @@ namespace XLSXManagement.Material
 
             ICell cell = row.CreateCell(0);
             cell.SetCellValue("KS - typ");
-            
+
             cell.CellStyle = _boldStyle;
 
             for (int i = 1; i < numColumns; i++)
@@ -164,6 +186,58 @@ namespace XLSXManagement.Material
                             cell.SetCellValue(entry);
                         }
                     }
+                }
+
+                if (i < numDataChunks - 2)
+                {
+                    // Write summary
+                    IRow summaryRow = GetNewRow();
+                    int emptySummaryCount = 0;
+
+                    for (int c = 0; c < numColumns; c++)
+                    {
+                        ICell cell = summaryRow.CreateCell(c);
+                        cell.CellStyle = _summaryStyle;
+                        string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
+
+                        if (string.IsNullOrEmpty(summary))
+                        {
+                            emptySummaryCount++;
+                            cell.SetCellValue("Suma");
+                        }
+                        else
+                        {
+                            cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                        }
+                    }
+
+                    CellRangeAddress region =
+                        new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, 0, emptySummaryCount - 1);
+                    _sheet.AddMergedRegion(region);
+                }
+                else if (i == numDataChunks - 2)
+                {
+                    IRow summaryRow = GetNewRow();
+                    int emptySummaryCount = 0;
+                    for (int c = 0; c < numColumns; c++)
+                    {
+                        ICell cell = summaryRow.CreateCell(c);
+                        cell.CellStyle = _finalSummaryStyle;
+                        string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
+                        if (string.IsNullOrEmpty(summary) || summary.Contains("Tota"))
+                        {
+                            emptySummaryCount++;
+                            cell.SetCellValue("Suma całkowita");
+                        }
+                        else
+                        {
+                            cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                        }
+                    }
+
+                    CellRangeAddress region =
+                        new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, 0, emptySummaryCount - 1);
+                    _sheet.AddMergedRegion(region);
                 }
             }
         }
