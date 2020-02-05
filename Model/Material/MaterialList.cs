@@ -126,7 +126,7 @@ namespace Model.Material
                 string trimedColumn = column.Trim();
                 if (!string.IsNullOrEmpty(trimedColumn))
                 {
-                    Columns.Add(new StringColumn(trimedColumn));
+                    Columns.Add(new StringColumn(TranslateUtils.Translate(trimedColumn)));
                 }
             }
         }
