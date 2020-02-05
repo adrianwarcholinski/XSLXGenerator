@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Design;
 using Model.Material;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -14,6 +16,10 @@ namespace XLSXManagement.Material
         private static IWorkbook _workbook;
         private static ISheet _sheet;
         private static MaterialList _list;
+
+        private static ICellStyle _borderStyle;
+        private static ICellStyle _centerAlignmentStyle;
+        private static ICellStyle _boldStyle;
 
         public static void WriteMaterialList(MaterialList list, string path)
         {
@@ -32,6 +38,8 @@ namespace XLSXManagement.Material
         {
             _workbook = new XSSFWorkbook();
             _sheet = _workbook.CreateSheet("lista");
+
+            InitStyles();
         }
 
         private static void AutosizeAllColumns()
@@ -43,24 +51,35 @@ namespace XLSXManagement.Material
             }
         }
 
-        private static ICellStyle GetCenterAlignmentStyle()
+        private static void InitStyles()
         {
-            ICellStyle style = GetBorderStyle();
-            style.Alignment = HorizontalAlignment.Center;
-            style.VerticalAlignment = VerticalAlignment.Center;
-
-            return style;
+            InitBorderStyle();
+            InitCenterAlignmentStyle();
+            InitBoldStyle();
         }
 
-        private static ICellStyle GetBorderStyle()
+        private static void InitBorderStyle()
         {
-            ICellStyle style = _workbook.CreateCellStyle();
-            style.BorderTop = BorderStyle.Thin;
-            style.BorderRight = BorderStyle.Thin;
-            style.BorderBottom = BorderStyle.Thin;
-            style.BorderLeft = BorderStyle.Thin;
+            _borderStyle = _workbook.CreateCellStyle();
+            _borderStyle.BorderTop = BorderStyle.Thin;
+            _borderStyle.BorderRight = BorderStyle.Thin;
+            _borderStyle.BorderBottom = BorderStyle.Thin;
+            _borderStyle.BorderLeft = BorderStyle.Thin;
+        }
 
-            return style;
+        private static void InitCenterAlignmentStyle()
+        {
+            _centerAlignmentStyle = _workbook.CreateCellStyle();
+            _centerAlignmentStyle.CloneStyleFrom(_borderStyle);
+            _centerAlignmentStyle.Alignment = HorizontalAlignment.Center;
+            _centerAlignmentStyle.VerticalAlignment = VerticalAlignment.Center;
+        }
+
+        private static void InitBoldStyle()
+        {
+            _boldStyle = _workbook.CreateCellStyle();
+            _boldStyle.CloneStyleFrom(_centerAlignmentStyle);
+            _boldStyle.SetFont(GetBoldFont());
         }
 
         private static void WriteColumnsNames()
@@ -74,7 +93,7 @@ namespace XLSXManagement.Material
             {
                 ICell cell = row.CreateCell(i);
                 cell.SetCellValue(_list.Columns.ElementAt(i).Name);
-                cell.CellStyle = GetCenterAlignmentStyle();
+                cell.CellStyle = _centerAlignmentStyle;
 
             }
         }
@@ -87,15 +106,12 @@ namespace XLSXManagement.Material
 
             ICell cell = row.CreateCell(0);
             cell.SetCellValue("KS - typ");
-
-            ICellStyle style = GetCenterAlignmentStyle();
-            style.SetFont(GetBoldFont());
-
-            cell.CellStyle = style;
+            
+            cell.CellStyle = _boldStyle;
 
             for (int i = 1; i < numColumns; i++)
             {
-                row.CreateCell(i).CellStyle = style;
+                row.CreateCell(i).CellStyle = _boldStyle;
             }
 
             CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 0, numColumns - 1);
@@ -133,7 +149,20 @@ namespace XLSXManagement.Material
                     for (int c = 0; c < numColumns; c++)
                     {
                         ICell cell = row.CreateCell(c);
-                        cell.SetCellValue(columns.ElementAt(c).Data.ElementAt(i).Entries.ElementAt(r));
+                        cell.CellStyle = _centerAlignmentStyle;
+
+                        string entry = columns.ElementAt(c).Data.ElementAt(i).Entries.ElementAt(r);
+                        bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
+                            out double result);
+
+                        if (isNumber)
+                        {
+                            cell.SetCellValue(result);
+                        }
+                        else
+                        {
+                            cell.SetCellValue(entry);
+                        }
                     }
                 }
             }
