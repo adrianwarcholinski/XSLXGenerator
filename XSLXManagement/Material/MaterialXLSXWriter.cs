@@ -10,8 +10,11 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Model;
 using NPOI.HSSF.Util;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using NPOI.SS.Formula.Functions;
 
 namespace XLSXManagement.Material
 {
@@ -177,9 +180,9 @@ namespace XLSXManagement.Material
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
 
-                        if (isNumber)
+                        if (isNumber && columns.ElementAt(c).Name != TranslateUtils.Translate("Part"))
                         {
-                            cell.SetCellValue(result);
+                            cell.SetCellValue(SeparateThousands(entry));
                         }
                         else
                         {
@@ -207,7 +210,7 @@ namespace XLSXManagement.Material
                         }
                         else
                         {
-                            cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                            cell.SetCellValue(SeparateThousands(summary));
                         }
                     }
 
@@ -231,7 +234,7 @@ namespace XLSXManagement.Material
                         }
                         else
                         {
-                            cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                            cell.SetCellValue(SeparateThousands(summary));
                         }
                     }
 
@@ -240,6 +243,20 @@ namespace XLSXManagement.Material
                     _sheet.AddMergedRegion(region);
                 }
             }
+        }
+
+        private static string SeparateThousands(string number)
+        {
+            double d = double.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture);
+            var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+            nfi.NumberGroupSeparator = " ";
+            string str = d.ToString("#,0.00", nfi).Replace(".", ",").Replace(",00", "");
+            if (str.Last() == '0' && str.Contains(","))
+            {
+                return str.Remove(str.Length - 1, 1);
+            }
+
+            return str;
         }
 
         private static void WriteWorkbook(string path)
