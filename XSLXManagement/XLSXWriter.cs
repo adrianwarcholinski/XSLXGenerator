@@ -9,9 +9,14 @@ namespace XLSXManagement
             switch (type)
             {
                 case ListType.Material:
-                case ListType.Delivery:
                 {
                     MaterialDeliveryXLSXWriter.WriteMaterialList(list, path);
+                    break;
+                }
+
+                case ListType.Delivery:
+                {
+                    MaterialDeliveryXLSXWriter.WriteMaterialList(list.ConvertToDeliveryList(), path);
                     break;
                 }
 

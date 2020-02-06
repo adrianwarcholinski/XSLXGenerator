@@ -172,7 +172,8 @@ namespace XLSXManagement
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
 
-                        if (isNumber && columns.ElementAt(c).Name != TranslateUtils.Translate("Part"))
+                        if (isNumber && columns.ElementAt(c).Name != TranslateUtils.Translate("Part")
+                                     && columns.ElementAt(c).Name != TranslateUtils.Translate("No."))
                         {
                             cell.SetCellValue(SeparateThousands(entry));
                         }
@@ -196,7 +197,7 @@ namespace XLSXManagement
                     ICell cell = summaryRow.CreateCell(c);
                     cell.CellStyle = summaryStyle;
 
-                    if (string.IsNullOrEmpty(summary) || summary.Contains("Tota"))
+                    if (string.IsNullOrEmpty(summary) || summary.Contains("Tota") || summary.Contains("for"))
                     {
                         emptySummaryCount++;
                         cell.SetCellValue(sumLabel);
@@ -214,6 +215,11 @@ namespace XLSXManagement
                             emptySummaryCount++;
                         }
                     }
+
+                    if (!string.IsNullOrEmpty(summary) && summary.Contains("for"))
+                    {
+                        emptySummaryCount++;
+                    }
                 }
 
                 CellRangeAddress region =
@@ -228,9 +234,15 @@ namespace XLSXManagement
             var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
             nfi.NumberGroupSeparator = " ";
             string str = d.ToString("#,0.00", nfi).Replace(".", ",").Replace(",00", "");
+
             if (str.Last() == '0' && str.Contains(","))
             {
-                return str.Remove(str.Length - 1, 1);
+                str = str.Remove(str.Length - 1, 1);
+            }
+
+            if (!str.Contains(","))
+            {
+                str += ",0";
             }
 
             return str;

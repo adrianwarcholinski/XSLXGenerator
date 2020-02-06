@@ -9,7 +9,7 @@ namespace Model
         private readonly ContentType _currentContentType;
 
         public Header Header { get; }
-        public ICollection<StringColumn> Columns { get; private set; }
+        public List<StringColumn> Columns { get; private set; }
 
 
         public TeklaList(string content)
