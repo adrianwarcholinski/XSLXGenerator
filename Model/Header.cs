@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 
-namespace Model.Material
+namespace Model
 {
-    public class MaterialHeader
+    public class Header
     {
         private const string DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
+        private const string DATE_FORMAT = "dd.MM.yyyy";
 
         public string Model { get; private set; }
         public string Project { get; private set; }
         public DateTime Date { get; private set; }
 
-        public MaterialHeader(string content)
+        public Header(string content)
         {
+            bool hasTime = false;
             string dateTimeString = "";
 
             string[] lines = content.Split('\n');
@@ -41,10 +42,11 @@ namespace Model.Material
                 {
                     string timeString = line.Split("Time:").Last().Trim();
                     dateTimeString += " " + timeString;
+                    hasTime = true;
                 }
             }
 
-            Date = DateTime.ParseExact(dateTimeString, DATE_TIME_FORMAT, CultureInfo.InvariantCulture);
+            Date = DateTime.ParseExact(dateTimeString, hasTime ? DATE_TIME_FORMAT : DATE_FORMAT, CultureInfo.InvariantCulture);
         }
 
         public override string ToString()

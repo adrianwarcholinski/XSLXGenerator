@@ -13,6 +13,10 @@
     </Window.DataContext>
 
     <Grid Margin="-1,0,1,0" Height="300">
+        <Grid.Resources>
+            <local:EnumBoolConverter x:Key="enumBoolConverter" />
+        </Grid.Resources>
+
         <Label Content="Elementy" FontWeight="Bold" HorizontalAlignment="Left" Margin="49,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
         <RadioButton GroupName="Elements" IsChecked="True" Content="Śruby" HorizontalAlignment="Left" Margin="31,50,0,0" VerticalAlignment="Top"/>
         <RadioButton GroupName="Elements" Content="Pręty" HorizontalAlignment="Left" Margin="31,75,0,0" VerticalAlignment="Top"/>
@@ -20,9 +24,9 @@
         <RadioButton GroupName="Elements" Content="Konstrukcja główna" HorizontalAlignment="Left" Margin="31,125,0,0" VerticalAlignment="Top"/>
 
         <Label Content="Rodzaj listy" FontWeight="Bold" HorizontalAlignment="Left" Margin="199,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
-        <RadioButton GroupName="ListType" IsChecked="True" Content="Wysyłkowa" HorizontalAlignment="Left" Margin="189,53,0,0" VerticalAlignment="Top"/>
-        <RadioButton GroupName="ListType" Content="Strukturalna" HorizontalAlignment="Left" Margin="189,78,0,0" VerticalAlignment="Top"/>
-        <RadioButton GroupName="ListType" Content="Materiałowa" HorizontalAlignment="Left" Margin="189,103,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="ListType" IsChecked="{Binding Path=SelectedListType, Converter={StaticResource enumBoolConverter}, ConverterParameter=Delivery}" Content="Wysyłkowa" HorizontalAlignment="Left" Margin="189,53,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="ListType" IsChecked="{Binding Path=SelectedListType, Converter={StaticResource enumBoolConverter}, ConverterParameter=Structural}" Content="Strukturalna" HorizontalAlignment="Left" Margin="189,78,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="ListType" IsChecked="{Binding Path=SelectedListType, Converter={StaticResource enumBoolConverter}, ConverterParameter=Material}" Content="Materiałowa" HorizontalAlignment="Left" Margin="189,103,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="326,34,0,0" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Top" Width="238" Height="104"/>
         <Label Content="Dodatkowe uwagi (opcjonalnie):" FontWeight="Bold" HorizontalAlignment="Left" Margin="353,3,0,0" VerticalAlignment="Top"/>
         <Button Command="{Binding SelectFileCommand}" Content="Wybierz plik" HorizontalAlignment="Left" Margin="75,180,0,0" VerticalAlignment="Top" Height="32" Width="94"/>

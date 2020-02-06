@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Model.Material
+namespace Model
 {
     public class StringColumn
     {

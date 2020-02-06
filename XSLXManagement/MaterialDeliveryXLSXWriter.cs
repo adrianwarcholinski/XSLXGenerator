@@ -1,28 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using Model.Material;
+﻿using Model;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Model;
-using NPOI.HSSF.Util;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
 
-namespace XLSXManagement.Material
+namespace XLSXManagement
 {
-    public static class MaterialXLSXWriter
+    internal static class MaterialDeliveryXLSXWriter
     {
         private static IWorkbook _workbook;
         private static ISheet _sheet;
-        private static MaterialList _list;
+        private static TeklaList _list;
 
         private static ICellStyle _borderStyle;
         private static ICellStyle _centerAlignmentStyle;
@@ -30,7 +22,7 @@ namespace XLSXManagement.Material
         private static ICellStyle _summaryStyle;
         private static ICellStyle _finalSummaryStyle;
 
-        public static void WriteMaterialList(MaterialList list, string path)
+        public static void WriteMaterialList(TeklaList list, string path)
         {
             InitWorkbook();
             _list = list;
@@ -165,7 +157,7 @@ namespace XLSXManagement.Material
             int numDataChunks = columns.First().Data.Count;
             int numColumns = _list.Columns.Count;
 
-            for (int i = 0; i < numDataChunks; i++)
+            for (int i = 0; i < numDataChunks - 1; i++)
             {
                 int rowCount = columns.First().Data.ElementAt(i).Entries.Count;
                 for (int r = 0; r < rowCount; r++)
@@ -191,57 +183,42 @@ namespace XLSXManagement.Material
                     }
                 }
 
-                if (i < numDataChunks - 2)
+                IRow summaryRow = GetNewRow();
+                int emptySummaryCount = 0;
+                bool isFinal = i == numDataChunks - 2;
+                ICellStyle summaryStyle = isFinal ? _finalSummaryStyle : _summaryStyle;
+                string sumLabel = isFinal ? "Suma całkowita" : "Suma";
+
+                for (int c = 0; c < numColumns; c++)
                 {
-                    // Write summary
-                    IRow summaryRow = GetNewRow();
-                    int emptySummaryCount = 0;
+                    string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
 
-                    for (int c = 0; c < numColumns; c++)
+                    ICell cell = summaryRow.CreateCell(c);
+                    cell.CellStyle = summaryStyle;
+
+                    if (string.IsNullOrEmpty(summary) || summary.Contains("Tota"))
                     {
-                        ICell cell = summaryRow.CreateCell(c);
-                        cell.CellStyle = _summaryStyle;
-                        string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
-
-                        if (string.IsNullOrEmpty(summary))
-                        {
-                            emptySummaryCount++;
-                            cell.SetCellValue("Suma");
-                        }
-                        else
+                        emptySummaryCount++;
+                        cell.SetCellValue(sumLabel);
+                    }
+                    else
+                    {
+                        bool isNumber = double.TryParse(summary, NumberStyles.Any, CultureInfo.InvariantCulture,
+                            out double result);
+                        if (isNumber)
                         {
                             cell.SetCellValue(SeparateThousands(summary));
                         }
-                    }
-
-                    CellRangeAddress region =
-                        new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, 0, emptySummaryCount - 1);
-                    _sheet.AddMergedRegion(region);
-                }
-                else if (i == numDataChunks - 2)
-                {
-                    IRow summaryRow = GetNewRow();
-                    int emptySummaryCount = 0;
-                    for (int c = 0; c < numColumns; c++)
-                    {
-                        ICell cell = summaryRow.CreateCell(c);
-                        cell.CellStyle = _finalSummaryStyle;
-                        string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
-                        if (string.IsNullOrEmpty(summary) || summary.Contains("Tota"))
-                        {
-                            emptySummaryCount++;
-                            cell.SetCellValue("Suma całkowita");
-                        }
                         else
                         {
-                            cell.SetCellValue(SeparateThousands(summary));
+                            emptySummaryCount++;
                         }
                     }
-
-                    CellRangeAddress region =
-                        new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, 0, emptySummaryCount - 1);
-                    _sheet.AddMergedRegion(region);
                 }
+
+                CellRangeAddress region =
+                    new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, 0, emptySummaryCount - 1);
+                _sheet.AddMergedRegion(region);
             }
         }
 

@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 
-namespace Model.Material
+namespace Model
 {
-    public class MaterialList
+    public class TeklaList
     {
-        private readonly MaterialContentTypes _currentContentType;
+        private readonly ContentType _currentContentType;
 
-        public MaterialHeader Header { get; }
+        public Header Header { get; }
         public ICollection<StringColumn> Columns { get; private set; }
 
 
-        public MaterialList(string content)
+        public TeklaList(string content)
         {
             IEnumerable<string> dataChunks = SplitData(content);
 
@@ -22,13 +21,13 @@ namespace Model.Material
                 _currentContentType = GetContentType(chunk);
                 switch (_currentContentType)
                 {
-                    case MaterialContentTypes.Header:
+                    case ContentType.Header:
                     {
-                        Header = new MaterialHeader(content);
+                        Header = new Header(content);
                         break;
                     }
 
-                    case MaterialContentTypes.Columns:
+                    case ContentType.Columns:
                     {
                         if (Columns == null)
                         {
@@ -38,13 +37,13 @@ namespace Model.Material
                         break;
                     }
 
-                    case MaterialContentTypes.Data:
+                    case ContentType.Data:
                     {
                         AppendData(chunk);
                         break;
                     }
 
-                    case MaterialContentTypes.Summary:
+                    case ContentType.Summary:
                     {
                         AppendSummary(chunk);
                         break;
@@ -52,7 +51,7 @@ namespace Model.Material
                 }
             }
 
-            Header = new MaterialHeader(content);
+            Header = new Header(content);
         }
 
         private IEnumerable<string> SplitData(string data)
@@ -79,35 +78,35 @@ namespace Model.Material
             return chunksByEqualSign.ToArray();
         }
 
-        private MaterialContentTypes GetContentType(string content)
+        private ContentType GetContentType(string content)
         {
             switch (_currentContentType)
             {
-                case MaterialContentTypes.Header:
-                    return MaterialContentTypes.Columns;
+                case ContentType.Header:
+                    return ContentType.Columns;
 
-                case MaterialContentTypes.Columns:
-                case MaterialContentTypes.Summary:
-                    return MaterialContentTypes.Data;
+                case ContentType.Columns:
+                case ContentType.Summary:
+                    return ContentType.Data;
 
-                case MaterialContentTypes.Data:
+                case ContentType.Data:
                 {
                     if (IsHeader(content))
                     {
-                        return MaterialContentTypes.Header;
+                        return ContentType.Header;
                     }
 
-                    return MaterialContentTypes.Summary;
+                    return ContentType.Summary;
                 }
 
                 default:
                 {
                     if (IsHeader(content))
                     {
-                        return MaterialContentTypes.Header;
+                        return ContentType.Header;
                     }
 
-                    return MaterialContentTypes.None;
+                    return ContentType.None;
                 }
             }
         }
@@ -120,7 +119,7 @@ namespace Model.Material
         private void InitColumns(string content)
         {
             Columns = new List<StringColumn>();
-            string[] columns = content.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            string[] columns = content.Split("  ", StringSplitOptions.RemoveEmptyEntries);
             foreach (string column in columns)
             {
                 string trimedColumn = column.Trim();

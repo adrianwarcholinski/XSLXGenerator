@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Model.Material
+namespace Model
 {
     public class DataChunk
     {

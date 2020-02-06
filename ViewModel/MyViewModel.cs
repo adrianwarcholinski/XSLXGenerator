@@ -1,10 +1,10 @@
 ﻿using FileManagement.Material;
-using Model.Material;
+using Model;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using XLSXManagement.Material;
+using XLSXManagement;
 
 namespace ViewModel
 {
@@ -46,6 +46,16 @@ namespace ViewModel
             }
         }
 
+        public ListType SelectedListType
+        {
+            get => _selectedListType;
+            set
+            {
+                _selectedListType = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion Properties
 
 
@@ -53,6 +63,7 @@ namespace ViewModel
         {
             SelectFileCommand = new Command(SelectFile);
             GenerateCommand = new Command(Generate);
+            SelectedListType = ListType.Delivery;
         }
 
         #region Raise PropertyChanged
@@ -82,8 +93,8 @@ namespace ViewModel
 
             Task.Run(() =>
             {
-                MaterialList list = MaterialListReader.ReadMaterialList(_selectedFileFullPath);
-                MaterialXLSXWriter.WriteMaterialList(list, _selectedTargetPath);
+                TeklaList list = ListReader.ReadMaterialList(_selectedFileFullPath);
+                XLSXWriter.WriteList(_selectedListType, list, _selectedTargetPath);
             });
         }
 
@@ -95,6 +106,7 @@ namespace ViewModel
         private string _selectedTargetPath;
         private bool _isActiveGenerateButton;
         private string _selectedFileFullPath;
+        private ListType _selectedListType;
 
         #endregion Private stuff
     }
