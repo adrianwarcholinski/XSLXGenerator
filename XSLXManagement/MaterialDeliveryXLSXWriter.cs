@@ -216,7 +216,7 @@ namespace XLSXManagement
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(summary) && summary.Contains("for"))
+                    if (!string.IsNullOrEmpty(summary) && summary.Contains("for") && summary.Length == 3)
                     {
                         emptySummaryCount++;
                     }

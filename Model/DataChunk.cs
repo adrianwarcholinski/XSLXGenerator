@@ -4,7 +4,7 @@ namespace Model
 {
     public class DataChunk
     {
-        public ICollection<string> Entries { get; }
+        public List<string> Entries { get; }
         public string Summary { get; set; }
 
         public DataChunk()
