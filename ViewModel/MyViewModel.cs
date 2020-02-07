@@ -1,4 +1,4 @@
-﻿using FileManagement.Material;
+﻿using FileManagement;
 using Model;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -24,7 +24,8 @@ namespace ViewModel
 
         #endregion Commands
 
-        #region  Properties
+        #region Properties
+
         public string SelectedFileName
         {
             get => _selectedSourceFileName;
@@ -67,6 +68,7 @@ namespace ViewModel
         }
 
         #region Raise PropertyChanged
+
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -75,6 +77,7 @@ namespace ViewModel
         #endregion
 
         #region Commands methods
+
         public void SelectFile()
         {
             string fileName = "";
@@ -93,7 +96,7 @@ namespace ViewModel
 
             Task.Run(() =>
             {
-                TeklaList list = ListReader.ReadMaterialList(_selectedFileFullPath);
+                AbstractList list = ListReader.ReadList(SelectedListType, _selectedFileFullPath);
                 XLSXWriter.WriteList(_selectedListType, list, _selectedTargetPath);
             });
         }

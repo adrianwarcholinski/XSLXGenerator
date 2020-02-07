@@ -3,17 +3,27 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace FileManagement.Material
+namespace FileManagement
 {
     public static class ListReader
     {
-        public static TeklaList ReadMaterialList(string path)
+        public static AbstractList ReadList(ListType type, string path)
+        {
+            string content = GetFileContent(path);
+            switch (type)
+            {
+                case ListType.Structural:
+                    return new StructuralList(content);
+
+                default:
+                    return new TeklaList(content);
+            }
+        }
+
+        private static string GetFileContent(string path)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            string content = File.ReadAllText(path, Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage));
-
-            return new TeklaList(content);
+            return File.ReadAllText(path, Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage));
         }
     }
 }

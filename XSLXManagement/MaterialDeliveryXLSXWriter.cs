@@ -14,7 +14,7 @@ namespace XLSXManagement
     {
         private static IWorkbook _workbook;
         private static ISheet _sheet;
-        private static TeklaList _list;
+        private static AbstractList _list;
 
         private static ICellStyle _borderStyle;
         private static ICellStyle _centerAlignmentStyle;
@@ -22,7 +22,7 @@ namespace XLSXManagement
         private static ICellStyle _summaryStyle;
         private static ICellStyle _finalSummaryStyle;
 
-        public static void WriteMaterialList(TeklaList list, string path)
+        public static void WriteMaterialList(AbstractList list, string path)
         {
             InitWorkbook();
             _list = list;

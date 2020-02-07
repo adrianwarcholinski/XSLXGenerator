@@ -6,12 +6,12 @@ namespace Model
 {
     public static class DeliveryListExtensions
     {
-        private static TeklaList _list;
+        private static AbstractList _list;
         private static StringColumn _weightColumn;
         private static StringColumn _quantityColumn;
         private static StringColumn _totalWeightColumn;
 
-        public static TeklaList ConvertToDeliveryList(this TeklaList list)
+        public static AbstractList ConvertToDeliveryList(this AbstractList list)
         {
             _list = list;
 
