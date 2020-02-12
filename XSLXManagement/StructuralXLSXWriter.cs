@@ -183,7 +183,9 @@ namespace XLSXManagement
 
                         if (isNumber && !nonDividableColumns.Contains(columnName))
                         {
-                            cell.SetCellValue(SeparateThousands(entry));
+                            IEnumerable<string> intColumns = GetTranslatedStrings(new[] {"Length"});
+                            bool isInteger = intColumns.Any(name => columnName.Contains(name));
+                            cell.SetCellValue(SeparateThousands(entry, !isInteger));
                         }
                         else
                         {
@@ -197,6 +199,30 @@ namespace XLSXManagement
                     }
                 }
             }
+
+            IRow summaryRow = GetNewRow();
+            int emptySummaryCount = 0;
+            string weightColumnName = TranslateUtils.Translate("Weight");
+            
+            for (int columnIndex = 0; columnIndex < columns.Count; columnIndex++)
+            {
+                ICell cell = summaryRow.CreateCell(columnIndex);
+                cell.CellStyle = _finalSummaryStyle;
+            
+                if (columns.ElementAt(columnIndex).Name.Contains(weightColumnName))
+                {
+                    cell.SetCellValue(SeparateThousands(_list.WeightSummary, false));
+                }
+                else
+                {
+                    cell.SetCellValue("Suma całkowita");
+                    emptySummaryCount++;
+                }
+            }
+            
+            CellRangeAddress region =
+                new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, 0, emptySummaryCount - 1);
+            _sheet.AddMergedRegion(region);
         }
 
         private static IEnumerable<string> GetTranslatedStrings(IEnumerable<string> originalStrings)
@@ -210,7 +236,7 @@ namespace XLSXManagement
             return returnValue;
         }
 
-        private static string SeparateThousands(string number)
+        private static string SeparateThousands(string number, bool addTrailingZero)
         {
             double d = double.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture);
             var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
@@ -222,7 +248,7 @@ namespace XLSXManagement
                 str = str.Remove(str.Length - 1, 1);
             }
 
-            if (!str.Contains(","))
+            if (!str.Contains(",") && addTrailingZero)
             {
                 str += ",0";
             }

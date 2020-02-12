@@ -7,6 +7,8 @@ namespace Model
 {
     public class StructuralList : AbstractList
     {
+        public string WeightSummary { get; }
+
         public StructuralList(string content)
         {
             IEnumerable<string> dataChunks = SplitData(content);
@@ -14,6 +16,7 @@ namespace Model
             foreach (string chunk in dataChunks)
             {
                 _currentContentType = GetContentType(chunk);
+                bool isFinalSummary = chunk.Contains("Total");
                 switch (_currentContentType)
                 {
                     case ContentType.Header:
@@ -50,7 +53,14 @@ namespace Model
 
                     case ContentType.Data:
                         {
-                            AppendData(chunk);
+                            if (isFinalSummary)
+                            {
+                                WeightSummary = chunk.Trim().Split(":").Last();
+                            }
+                            else
+                            {
+                                AppendData(chunk);
+                            }
                             break;
                         }
 

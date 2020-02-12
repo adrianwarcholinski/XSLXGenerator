@@ -32,7 +32,7 @@ namespace Model
             List<StringColumn> dividedColumns = GetClonedColumns();
             List<StringColumn> originalColumns = _list.Columns;
 
-            int numEntries = originalColumns.First().GetLastChunk().Entries.Count;
+            int numEntries = originalColumns.ElementAt(1).GetLastChunk().Entries.Count;
             for (int entryIndex = 0; entryIndex < numEntries; entryIndex++)
             {
                 string assemblyEntry = originalColumns.First().GetLastChunk().Entries.ElementAt(entryIndex);
@@ -127,7 +127,6 @@ namespace Model
         {
             List<string> assemblyEntries = ColumnUtils.FindColumn(_list, "Assembly", out _).GetLastChunk().Entries;
             int numAssemblyEntries = assemblyEntries.Count;
-            assemblyEntries.RemoveAt(--numAssemblyEntries);
 
             List<StringColumn> columns = _list.Columns;
             foreach (StringColumn column in columns)
