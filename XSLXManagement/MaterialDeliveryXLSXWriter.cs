@@ -28,7 +28,6 @@ namespace XLSXManagement
             _list = list;
 
             WriteColumnsNames();
-            WriteKSType();
             WriteData();
 
             AutosizeAllColumns();
@@ -157,6 +156,8 @@ namespace XLSXManagement
             int numDataChunks = columns.First().Data.Count;
             int numColumns = _list.Columns.Count;
 
+            IEnumerable<string> intColumns = new[] {"Asmbly Pos.", "No."};
+
             for (int i = 0; i < numDataChunks - 1; i++)
             {
                 int rowCount = columns.First().Data.ElementAt(i).Entries.Count;
@@ -172,10 +173,14 @@ namespace XLSXManagement
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
 
-                        if (isNumber && columns.ElementAt(c).Name != TranslateUtils.Translate("Part")
-                                     && columns.ElementAt(c).Name != TranslateUtils.Translate("No."))
+                        string columnName = columns.ElementAt(c).Name;
+
+                        if (isNumber && !columnName.Contains(TranslateUtils.Translate("Part"))
+                                     && !columnName.Contains(TranslateUtils.Translate("No."))
+                                     && !columnName.Contains(TranslateUtils.Translate("Asmbly Pos."))
+                                     && !columnName.Contains(TranslateUtils.Translate("Length")))
                         {
-                            cell.SetCellValue(SeparateThousands(entry));
+                                cell.SetCellValue(SeparateThousands(entry, true));
                         }
                         else
                         {
@@ -208,7 +213,7 @@ namespace XLSXManagement
                             out double result);
                         if (isNumber)
                         {
-                            cell.SetCellValue(SeparateThousands(summary));
+                            cell.SetCellValue(SeparateThousands(summary, true));
                         }
                         else
                         {
@@ -228,7 +233,7 @@ namespace XLSXManagement
             }
         }
 
-        private static string SeparateThousands(string number)
+        private static string SeparateThousands(string number, bool addTrailingZero)
         {
             double d = double.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture);
             var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
@@ -240,7 +245,7 @@ namespace XLSXManagement
                 str = str.Remove(str.Length - 1, 1);
             }
 
-            if (!str.Contains(","))
+            if (!str.Contains(",") && addTrailingZero)
             {
                 str += ",0";
             }

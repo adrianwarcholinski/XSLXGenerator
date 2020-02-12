@@ -57,6 +57,29 @@ namespace ViewModel
             }
         }
 
+        public bool IsDeliveryAvailable
+        {
+            get => true;
+        }
+
+        public bool IsStructuralAvailable
+        {
+            get => true;
+            set
+            {
+                // coś tam
+            }
+        }
+
+        public bool IsMaterialAvailable
+        {
+            get => true;
+            set
+            {
+                //
+            }
+        }
+
         #endregion Properties
 
 

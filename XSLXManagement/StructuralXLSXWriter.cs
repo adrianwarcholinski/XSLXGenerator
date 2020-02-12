@@ -28,7 +28,6 @@ namespace XLSXManagement
             _list = list;
 
             WriteColumnsNames();
-            WriteKSType();
             WriteData();
 
             AutosizeAllColumns();

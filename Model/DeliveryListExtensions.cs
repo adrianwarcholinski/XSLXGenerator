@@ -24,13 +24,16 @@ namespace Model
         private static void CalculateTotalWeight()
         {
             List<StringColumn> columns = _list.Columns;
-            _weightColumn = FindColumn("Weight", out int index);
-            _quantityColumn = FindColumn("No.", out _);
-            _totalWeightColumn = new StringColumn("Waga całkowita (kg)");
+            if (columns.Any(column => column.Name.Contains(TranslateUtils.Translate("Weight"))))
+            {
+                _weightColumn = FindColumn("Weight", out int index);
+                _quantityColumn = FindColumn("No.", out _);
+                _totalWeightColumn = new StringColumn("Waga całkowita (kg)");
 
-            columns.Insert(index + 1, _totalWeightColumn);
+                columns.Insert(index + 1, _totalWeightColumn);
 
-            FillTotalWeight();
+                FillTotalWeight();
+            }
         }
 
         private static void FillTotalWeight()
@@ -67,9 +70,12 @@ namespace Model
 
         private static void PutAreaOnEnd()
         {
-            StringColumn areaColumn = FindColumn("Area", out int index);
-            _list.Columns.Remove(areaColumn);
-            _list.Columns.Add(areaColumn);
+            if (_list.Columns.Any(column => column.Name.Contains(TranslateUtils.Translate("Area"))))
+            {
+                StringColumn areaColumn = FindColumn("Area", out int index);
+                _list.Columns.Remove(areaColumn);
+                _list.Columns.Add(areaColumn);
+            }
         }
     }
 }
