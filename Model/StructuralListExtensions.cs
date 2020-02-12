@@ -7,110 +7,76 @@ namespace Model
 {
     public static class StructuralListExtensions
     {
-        private static StructuralList _list;
-        private static StringColumn _assemblyColumn;
+        private static AbstractList _list;
 
-        public static StructuralList ConvertToStructuralList(this StructuralList list)
+        public static StructuralList ConvertToStructuralList(this AbstractList list)
         {
             _list = list;
 
             TidyColumns();
 
-            return _list;
+            return (StructuralList) _list;
         }
 
         private static void TidyColumns()
         {
-            _assemblyColumn = ColumnUtils.FindColumn(_list, "Assembly", out _);
             FillRemainingColumns();
+            MoveToRightColumns();
+            HandleFirstRows();
+        }
 
-            DataChunk assemblyData = _assemblyColumn.GetLastChunk();
-            List<string> assemblyEntries = assemblyData.Entries;
+        private static void HandleFirstRows()
+        {
+            List<string> assemblyEntries = ColumnUtils.FindColumn(_list, "Assembly", out _).GetLastChunk().Entries;
+            List<string> partEntries = ColumnUtils.FindColumn(_list, "Part", out _).GetLastChunk().Entries;
+            List<string> gradeEntries = ColumnUtils.FindColumn(_list, "Grade", out _).GetLastChunk().Entries;
+            List<string> weightEntries = ColumnUtils.FindColumn(_list, "Weight", out _).GetLastChunk().Entries;
+            List<string> lengthEntries = ColumnUtils.FindColumn(_list, "Length", out _).GetLastChunk().Entries;
 
             for (int entryIndex = 0; entryIndex < assemblyEntries.Count; entryIndex++)
             {
-                string entry = assemblyEntries.ElementAt(entryIndex);
-                if (!entry.Contains(" "))
+                string partEntry = partEntries.ElementAt(entryIndex);
+                if (!partEntry.Contains(" "))
                 {
-                    OrganizeFirstRow(entryIndex);
-                }
-                else
-                {
-                    List<StringColumn> columns = _list.Columns;
-                    for (int columnIndex = columns.Count - 2; columnIndex >= 0; columnIndex--)
-                    {
-                        List<string> leftEntries = columns.ElementAt(columnIndex).Data.First().Entries;
-                        List<string> rightEntries = columns.ElementAt(columnIndex + 1).Data.First().Entries;
+                    string gradeEntry = gradeEntries.ElementAt(entryIndex);
 
-                        string leftEntry = leftEntries.ElementAt(entryIndex);
+                    assemblyEntries.UpdateElementAt(entryIndex, partEntry);
+                    partEntries.UpdateElementAt(entryIndex, "");
 
-                        leftEntries.RemoveAt(entryIndex);
-                        leftEntries.Insert(entryIndex, "");
+                    weightEntries.InsertAndRemoveLastElement(entryIndex, gradeEntry);
+                    gradeEntries.UpdateElementAt(entryIndex, "");
 
-                        rightEntries.RemoveAt(entryIndex);
-                        rightEntries.Insert(entryIndex, leftEntry);
-                    }
-                }
-            }
-
-            List<string> noEntries = ColumnUtils.FindColumn(_list, "No.", out _).Data.First().Entries;
-            for (int entryIndex = 0; entryIndex < noEntries.Count; entryIndex++)
-            {
-                string noEntry = noEntries.ElementAt(entryIndex);
-                if (!noEntry.Contains(" "))
-                {
-                    noEntries.RemoveAt(entryIndex);
+                    lengthEntries.InsertAndRemoveLastElement(entryIndex, "");
                 }
             }
         }
 
-        private static void OrganizeFirstRow(int entryIndex)
+        private static void MoveToRightColumns()
         {
-            List<string> assemblyEntries = ColumnUtils.FindColumn(_list, "Assembly", out _).Data.First().Entries;
-            List<string> partEntries = ColumnUtils.FindColumn(_list, "Part", out _).Data.First().Entries;
-            List<string> noEntries = ColumnUtils.FindColumn(_list, "No.", out _).Data.First().Entries;
-            List<string> profileEntries = ColumnUtils.FindColumn(_list, "Profile", out _).Data.First().Entries;
-            List<string> weightEntries = ColumnUtils.FindColumn(_list, "Weight", out _).Data.First().Entries;
+            List<string> assemblyEntries = ColumnUtils.FindColumn(_list, "Assembly", out _).GetLastChunk().Entries;
 
-            string assemblyEntry = assemblyEntries.ElementAt(entryIndex).Trim();
-            string partEntry = partEntries.ElementAt(entryIndex).Trim();
-            string noEntry = noEntries.ElementAt(entryIndex).Trim();
-            string profileEntry = profileEntries.ElementAt(entryIndex).Trim();
-
-            for (int columnIndex = 0; columnIndex < _list.Columns.Count; columnIndex++)
+            for (int entryIndex = 0; entryIndex < assemblyEntries.Count; entryIndex++)
             {
-                List<string> entries = _list.Columns.ElementAt(columnIndex).Data.First().Entries;
-
-                if (entries != assemblyEntries && entries != noEntries && entries != profileEntries &&
-                    entries != weightEntries)
+                List<StringColumn> columns = _list.Columns;
+                for (int columnIndex = columns.Count - 2; columnIndex >= 0; columnIndex--)
                 {
-                    entries.Insert(entryIndex, "");
-                }
-            }
+                    List<string> leftEntries = columns.ElementAt(columnIndex).Data.First().Entries;
+                    List<string> rightEntries = columns.ElementAt(columnIndex + 1).Data.First().Entries;
 
-            assemblyEntries.Insert(entryIndex, assemblyEntry);
-            noEntries.Insert(entryIndex, partEntry);
-            profileEntries.Insert(entryIndex, noEntry);
-            weightEntries.Insert(entryIndex, profileEntry);
+                    string leftEntry = leftEntries.ElementAt(entryIndex);
 
-            for (int columnIndex = 0; columnIndex < _list.Columns.Count; columnIndex++)
-            {
-                List<string> entries = _list.Columns.ElementAt(columnIndex).Data.First().Entries;
-                if (entries != assemblyEntries && entries != noEntries && entries != profileEntries &&
-                    entries != weightEntries)
-                {
-                    entries.RemoveAt(entries.Count - 1);
-                }
-                else
-                {
-                    entries.RemoveAt(entryIndex + 1);
+                    leftEntries.RemoveAt(entryIndex);
+                    leftEntries.Insert(entryIndex, "");
+
+                    rightEntries.RemoveAt(entryIndex);
+                    rightEntries.Insert(entryIndex, leftEntry);
                 }
             }
         }
 
         private static void FillRemainingColumns()
         {
-            List<string> assemblyEntries = _assemblyColumn.Data.First().Entries;
+            List<string> assemblyEntries = ColumnUtils.FindColumn(_list, "Assembly", out _).GetLastChunk().Entries;
             int numAssemblyEntries = assemblyEntries.Count;
             assemblyEntries.RemoveAt(--numAssemblyEntries);
 

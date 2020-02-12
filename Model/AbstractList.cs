@@ -97,40 +97,7 @@ namespace Model
             }
         }
 
-        protected ContentType GetContentType(string content)
-        {
-            switch (_currentContentType)
-            {
-                case ContentType.Header:
-                    return ContentType.Columns;
-
-                case ContentType.Columns:
-                case ContentType.Summary:
-                    return ContentType.Data;
-
-                case ContentType.Data:
-                {
-                    if (IsHeader(content))
-                    {
-                        return ContentType.Header;
-                    }
-
-                    return ContentType.Summary;
-                }
-
-                default:
-                {
-                    if (IsHeader(content))
-                    {
-                        return ContentType.Header;
-                    }
-
-                    return ContentType.None;
-                }
-            }
-        }
-
-        private static bool IsHeader(string content)
+        protected static bool IsHeader(string content)
         {
             return content.ToUpper().Contains("TEKLA");
         }

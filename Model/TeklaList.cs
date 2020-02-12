@@ -48,6 +48,29 @@ namespace Model
             Header = new Header(content);
         }
 
+        private ContentType GetContentType(string content)
+        {
+            switch (_currentContentType)
+            {
+                case ContentType.Header:
+                    return ContentType.Columns;
+
+                case ContentType.Columns:
+                case ContentType.Summary:
+                    return ContentType.Data;
+
+                case ContentType.Data:
+                {
+                    return IsHeader(content) ? ContentType.Header : ContentType.Summary;
+                }
+
+                default:
+                {
+                    return IsHeader(content) ? ContentType.Header : ContentType.None;
+                }
+            }
+        }
+
         public override string ToString()
         {
             return $"Header: {Header}";

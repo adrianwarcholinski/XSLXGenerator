@@ -22,7 +22,7 @@ namespace XLSXManagement
 
                 case ListType.Structural:
                 {
-                    StructuralXLSXWriter.WriteStructuralList(list, path);
+                    StructuralXLSXWriter.WriteStructuralList(list.ConvertToStructuralList(), path);
                     break;
                 }
             }
