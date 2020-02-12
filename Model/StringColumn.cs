@@ -6,7 +6,7 @@ namespace Model
     public class StringColumn
     {
         public string Name { get; }
-        public List<DataChunk> Data { get; private set; }
+        public List<DataChunk> Data { get; set; }
 
         public StringColumn(string columnName)
         {

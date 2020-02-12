@@ -9,7 +9,7 @@ namespace Model
         public ContentType _currentContentType;
 
         public Header Header { get; protected set; }
-        public List<StringColumn> Columns { get; protected set; }
+        public List<StringColumn> Columns { get; set; }
 
         protected void InitColumns(string content)
         {

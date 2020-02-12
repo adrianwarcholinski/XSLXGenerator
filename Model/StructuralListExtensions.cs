@@ -23,6 +23,55 @@ namespace Model
             FillRemainingColumns();
             MoveToRightColumns();
             HandleFirstRows();
+
+            _list.Columns = GetDividedData();
+        }
+
+        private static List<StringColumn> GetDividedData()
+        {
+            List<StringColumn> dividedColumns = GetClonedColumns();
+            List<StringColumn> originalColumns = _list.Columns;
+
+            int numEntries = originalColumns.First().GetLastChunk().Entries.Count;
+            for (int entryIndex = 0; entryIndex < numEntries; entryIndex++)
+            {
+                string assemblyEntry = originalColumns.First().GetLastChunk().Entries.ElementAt(entryIndex);
+                if (!string.IsNullOrEmpty(assemblyEntry))
+                {
+                    StartNewChunk(dividedColumns);
+                }
+
+                for (int columnIndex = 0; columnIndex < dividedColumns.Count; columnIndex++)
+                {
+                    string entry = originalColumns.ElementAt(columnIndex).GetLastChunk().Entries.ElementAt(entryIndex);
+                    dividedColumns.ElementAt(columnIndex).GetLastChunk().AddEntry(entry);
+                }
+            }
+
+            return dividedColumns;
+        }
+
+        private static void StartNewChunk(List<StringColumn> columns)
+        {
+            for (int columnIndex = 0; columnIndex < columns.Count; columnIndex++)
+            {
+                StringColumn currentColumn = columns.ElementAt(columnIndex);
+                currentColumn.Data.Add(new DataChunk());
+            }
+        }
+
+        private static List<StringColumn> GetClonedColumns()
+        {
+            List<StringColumn> clonedColumns = new List<StringColumn>();
+            List<StringColumn> oldColumns = _list.Columns;
+            foreach (StringColumn oldColumn in oldColumns)
+            {
+                StringColumn newColumn = new StringColumn(oldColumn.Name);
+                newColumn.Data = new List<DataChunk>();
+                clonedColumns.Add(newColumn);
+            }
+
+            return clonedColumns;
         }
 
         private static void HandleFirstRows()
