@@ -4,6 +4,7 @@
     {
         Material,
         Delivery,
-        Structural
+        Structural,
+        BoltsDelivery
     }
 }

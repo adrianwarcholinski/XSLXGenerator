@@ -18,10 +18,8 @@
         </Grid.Resources>
 
         <Label Content="Elementy" FontWeight="Bold" HorizontalAlignment="Left" Margin="49,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
-        <RadioButton GroupName="Elements" IsChecked="True" Content="Śruby" HorizontalAlignment="Left" Margin="31,50,0,0" VerticalAlignment="Top"/>
-        <RadioButton GroupName="Elements" Content="Pręty" HorizontalAlignment="Left" Margin="31,75,0,0" VerticalAlignment="Top"/>
-        <RadioButton GroupName="Elements" Content="Kotwy" HorizontalAlignment="Left" Margin="31,100,0,0" VerticalAlignment="Top"/>
-        <RadioButton GroupName="Elements" Content="Konstrukcja główna" HorizontalAlignment="Left" Margin="31,125,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="Elements" Content="Śruby" IsChecked="{Binding Path=SelectedFileContentType, Converter={StaticResource enumBoolConverter}, ConverterParameter=Bolts}" HorizontalAlignment="Left" Margin="31,53,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="Elements" Content="Konstrukcja główna" IsChecked="{Binding Path=SelectedFileContentType, Converter={StaticResource enumBoolConverter}, ConverterParameter=MainConstruction}" HorizontalAlignment="Left" Margin="31,78,0,0" VerticalAlignment="Top"/>
 
         <Label Content="Rodzaj listy" FontWeight="Bold" HorizontalAlignment="Left" Margin="199,16,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.058,0.602"/>
         <RadioButton GroupName="ListType" IsEnabled="{Binding IsDeliveryAvailable}" IsChecked="{Binding Path=SelectedListType, Converter={StaticResource enumBoolConverter}, ConverterParameter=Delivery}" Content="Wysyłkowa" HorizontalAlignment="Left" Margin="189,53,0,0" VerticalAlignment="Top"/>

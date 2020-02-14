@@ -9,22 +9,20 @@ namespace XLSXManagement
             switch (type)
             {
                 case ListType.Material:
-                {
                     MaterialDeliveryXLSXWriter.WriteMaterialList(list, path);
                     break;
-                }
 
                 case ListType.Delivery:
-                {
                     MaterialDeliveryXLSXWriter.WriteMaterialList(list.ConvertToDeliveryList(), path);
                     break;
-                }
 
                 case ListType.Structural:
-                {
                     StructuralXLSXWriter.WriteStructuralList(list.ConvertToStructuralList(), path);
                     break;
-                }
+
+                case ListType.BoltsDelivery:
+                    BoltsDeliveryXLSXWriter.WriteDeliveryList(list.ConvertToBoltsDeliveryList(), path);
+                    break;
             }
         }
     }

@@ -57,26 +57,46 @@ namespace ViewModel
             }
         }
 
-        public bool IsDeliveryAvailable
+        public FileContentType SelectedFileContentType
         {
-            get => true;
+            get => _selectedFileContentType;
+            set
+            {
+                _selectedFileContentType = value;
+                switch (value)
+                {
+                    case FileContentType.MainConstruction:
+                        IsMaterialAvailable = IsStructuralAvailable = true;
+                        break;
+
+                    case FileContentType.Bolts:
+                        IsMaterialAvailable = IsStructuralAvailable = false;
+                        SelectedListType = ListType.Delivery;
+                        break;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool IsDeliveryAvailable => true;
+
+        public bool IsMaterialAvailable
+        {
+            get => _isMaterialAvailable;
+            set
+            {
+                _isMaterialAvailable = value;
+                RaisePropertyChanged();
+            }
         }
 
         public bool IsStructuralAvailable
         {
-            get => true;
+            get => _isStructuralAvailable;
             set
             {
-                // coś tam
-            }
-        }
-
-        public bool IsMaterialAvailable
-        {
-            get => true;
-            set
-            {
-                //
+                _isStructuralAvailable = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -88,6 +108,7 @@ namespace ViewModel
             SelectFileCommand = new Command(SelectFile);
             GenerateCommand = new Command(Generate);
             SelectedListType = ListType.Delivery;
+            SelectedFileContentType = FileContentType.MainConstruction;
         }
 
         #region Raise PropertyChanged
@@ -120,7 +141,15 @@ namespace ViewModel
             Task.Run(() =>
             {
                 AbstractList list = ListReader.ReadList(SelectedListType, _selectedFileFullPath);
-                XLSXWriter.WriteList(_selectedListType, list, _selectedTargetPath);
+
+                if (SelectedFileContentType == FileContentType.MainConstruction)
+                {
+                    XLSXWriter.WriteList(_selectedListType, list, _selectedTargetPath);
+                }
+                else
+                {
+                    XLSXWriter.WriteList(ListType.BoltsDelivery, list, _selectedTargetPath);
+                }
             });
         }
 
@@ -133,6 +162,10 @@ namespace ViewModel
         private bool _isActiveGenerateButton;
         private string _selectedFileFullPath;
         private ListType _selectedListType;
+        private FileContentType _selectedFileContentType;
+
+        private bool _isMaterialAvailable;
+        private bool _isStructuralAvailable;
 
         #endregion Private stuff
     }
