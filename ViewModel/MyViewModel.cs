@@ -75,6 +75,7 @@ namespace ViewModel
                         SelectedListType = ListType.Delivery;
                         break;
                 }
+
                 RaisePropertyChanged();
             }
         }
@@ -141,16 +142,12 @@ namespace ViewModel
 
             Task.Run(() =>
             {
-                AbstractList list = ListReader.ReadList(SelectedListType, _selectedFileFullPath);
-
-                if (SelectedFileContentType == FileContentType.MainConstruction)
-                {
-                    XLSXWriterSwitcher.WriteList(_selectedListType, list, _selectedTargetPath);
-                }
-                else
-                {
-                    XLSXWriterSwitcher.WriteList(ListType.BoltsDelivery, list, _selectedTargetPath);
-                }
+                ListType type = SelectedFileContentType == FileContentType.MainConstruction
+                    ? SelectedListType
+                    : ListType.BoltsDelivery;
+                
+                AbstractList list = ListReader.ReadList(type, _selectedFileFullPath);
+                XLSXWriterSwitcher.WriteList(type, list, _selectedTargetPath);
             });
         }
 

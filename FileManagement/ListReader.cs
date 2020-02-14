@@ -16,6 +16,9 @@ namespace FileManagement
                 case ListType.Structural:
                     return new StructuralList(content);
 
+                case ListType.BoltsDelivery:
+                    return new BoltsDeliveryList(content);
+
                 default:
                     return new TeklaList(content);
             }

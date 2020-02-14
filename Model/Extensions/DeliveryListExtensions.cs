@@ -8,14 +8,14 @@ namespace Model.Extensions
 {
     public static class DeliveryListExtensions
     {
-        private static AbstractList _list;
+        private static TeklaList _list;
         private static StringColumn _weightColumn;
         private static StringColumn _quantityColumn;
         private static StringColumn _totalWeightColumn;
 
-        public static AbstractList ConvertToDeliveryList(this AbstractList list)
+        public static TeklaList ConvertToDeliveryList(this AbstractList list)
         {
-            _list = list;
+            _list = (TeklaList) list;
 
             CalculateTotalWeight();
 

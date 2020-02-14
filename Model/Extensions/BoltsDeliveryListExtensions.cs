@@ -1,15 +1,16 @@
-﻿using System;
-using Model.List;
+﻿using Model.List;
 
 namespace Model.Extensions
 {
     public static class BoltsDeliveryListExtensions
     {
-        private static AbstractList _list;
+        private static BoltsDeliveryList _list;
 
-        public static TeklaList ConvertToBoltsDeliveryList(this AbstractList list)
+        public static BoltsDeliveryList ConvertToBoltsDeliveryList(this AbstractList list)
         {
-            throw new NotImplementedException();
+            _list = (BoltsDeliveryList) list;
+
+            return _list;
         }
     }
 }

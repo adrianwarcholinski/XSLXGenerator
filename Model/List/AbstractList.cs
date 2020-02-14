@@ -26,7 +26,7 @@ namespace Model.List
             }
         }
 
-        protected IEnumerable<string> SplitData(string data)
+        protected virtual IEnumerable<string> SplitData(string data)
         {
             string[] chunksByHyphen = data.Split("-", StringSplitOptions.RemoveEmptyEntries);
 
@@ -50,7 +50,7 @@ namespace Model.List
             return chunksByEqualSign.ToArray();
         }
 
-        protected void AppendData(string content)
+        protected virtual void AppendData(string content)
         {
             string[] lines = content.Split("\n", StringSplitOptions.RemoveEmptyEntries);
             foreach (string line in lines)

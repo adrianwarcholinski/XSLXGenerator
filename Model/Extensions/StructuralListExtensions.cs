@@ -7,15 +7,15 @@ namespace Model.Extensions
 {
     public static class StructuralListExtensions
     {
-        private static AbstractList _list;
+        private static StructuralList _list;
 
         public static StructuralList ConvertToStructuralList(this AbstractList list)
         {
-            _list = list;
+            _list = (StructuralList) list;
 
             TidyColumns();
 
-            return (StructuralList) _list;
+            return _list;
         }
 
         private static void TidyColumns()
