@@ -1,7 +1,7 @@
-﻿using Model;
+﻿using Model.List;
 using NPOI.SS.UserModel;
 
-namespace XLSXManagement
+namespace XLSXManagement.WriteDataStrategy
 {
     internal interface IXLSXWriteDataStrategy
     {

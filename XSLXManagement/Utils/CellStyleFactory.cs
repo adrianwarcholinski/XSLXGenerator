@@ -1,7 +1,6 @@
-﻿using NPOI.SS.Formula.Udf;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
 
-namespace XLSXManagement
+namespace XLSXManagement.Utils
 {
     internal static class CellStyleFactory
     {

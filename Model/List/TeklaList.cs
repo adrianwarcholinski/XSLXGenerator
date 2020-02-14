@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Model.DataModel;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Model
+namespace Model.List
 {
     public class TeklaList : AbstractList
     {

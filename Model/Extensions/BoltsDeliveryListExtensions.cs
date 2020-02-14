@@ -1,6 +1,7 @@
 ﻿using System;
+using Model.List;
 
-namespace Model
+namespace Model.Extensions
 {
     public static class BoltsDeliveryListExtensions
     {

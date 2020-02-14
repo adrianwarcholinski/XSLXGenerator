@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Model.DataModel;
 
-namespace Model
+namespace Model.List
 {
     public class StructuralList : AbstractList
     {
@@ -75,7 +76,7 @@ namespace Model
             Header = new Header(content);
         }
 
-        private void InitColumns(string content)
+        protected override void InitColumns(string content)
         {
             Columns = new List<StringColumn>();
             string[] columns = content.Split(" ", StringSplitOptions.RemoveEmptyEntries);

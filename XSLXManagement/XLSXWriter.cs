@@ -1,8 +1,10 @@
-﻿using Model;
+﻿using Model.List;
 using NPOI.SS.UserModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using XLSXManagement.Utils;
+using XLSXManagement.WriteDataStrategy;
 
 namespace XLSXManagement
 {

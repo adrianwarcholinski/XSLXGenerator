@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace ViewModel
+﻿namespace ViewModel
 {
     public interface IWindow
     {

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Model.DataModel;
+using Model.List;
 
-namespace Model
+namespace Model.Extensions
 {
     public static class DeliveryListExtensions
     {

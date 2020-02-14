@@ -1,7 +1,7 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace XLSXManagement
+namespace XLSXManagement.Utils
 {
     internal class SheetFactory
     {

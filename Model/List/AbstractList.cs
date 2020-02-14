@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Model.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Model
+namespace Model.List
 {
     public abstract class AbstractList
     {
@@ -11,7 +12,7 @@ namespace Model
         public Header Header { get; protected set; }
         public List<StringColumn> Columns { get; set; }
 
-        protected void InitColumns(string content)
+        protected virtual void InitColumns(string content)
         {
             Columns = new List<StringColumn>();
             string[] columns = content.Split("  ", StringSplitOptions.RemoveEmptyEntries);

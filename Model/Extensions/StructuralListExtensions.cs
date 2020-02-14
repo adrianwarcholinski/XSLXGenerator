@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Model.DataModel;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using Model.List;
 
-namespace Model
+namespace Model.Extensions
 {
     public static class StructuralListExtensions
     {

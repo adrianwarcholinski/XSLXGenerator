@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace Model
+namespace Model.DataModel
 {
     public class Header
     {

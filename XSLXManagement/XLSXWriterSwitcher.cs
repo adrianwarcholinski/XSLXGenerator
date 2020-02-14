@@ -1,4 +1,7 @@
 ﻿using Model;
+using Model.Extensions;
+using Model.List;
+using XLSXManagement.WriteDataStrategy;
 
 namespace XLSXManagement
 {
@@ -21,7 +24,7 @@ namespace XLSXManagement
                     break;
 
                 case ListType.BoltsDelivery:
-                    XLSXWriter.WriteList(list.ConvertToStructuralList(), path, new StructuralStrategy());
+                    XLSXWriter.WriteList(list.ConvertToBoltsDeliveryList(), path, new BoltsDeliveryStrategy());
                     break;
             }
         }

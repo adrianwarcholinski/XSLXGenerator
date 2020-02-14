@@ -1,6 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 
-namespace XLSXManagement
+namespace XLSXManagement.Utils
 {
     internal class FontFactory
     {
