@@ -144,11 +144,11 @@ namespace ViewModel
 
                 if (SelectedFileContentType == FileContentType.MainConstruction)
                 {
-                    XLSXWriter.WriteList(_selectedListType, list, _selectedTargetPath);
+                    XLSXWriterSwitcher.WriteList(_selectedListType, list, _selectedTargetPath);
                 }
                 else
                 {
-                    XLSXWriter.WriteList(ListType.BoltsDelivery, list, _selectedTargetPath);
+                    XLSXWriterSwitcher.WriteList(ListType.BoltsDelivery, list, _selectedTargetPath);
                 }
             });
         }

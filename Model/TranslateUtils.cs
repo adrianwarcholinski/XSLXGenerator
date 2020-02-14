@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Model
@@ -25,6 +26,17 @@ namespace Model
             }
 
             return input;
+        }
+
+        public static IEnumerable<string> GetTranslatedStrings(IEnumerable<string> originalStrings)
+        {
+            ICollection<string> translatedStrings = new List<string>();
+            foreach (string originalString in originalStrings)
+            {
+                translatedStrings.Add(Translate(originalString));
+            }
+
+            return translatedStrings;
         }
     }
 }
