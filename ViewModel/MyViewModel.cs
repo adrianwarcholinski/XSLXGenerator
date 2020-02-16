@@ -20,8 +20,10 @@ namespace ViewModel
 
         #region Commands
 
-        public ICommand SelectFileCommand { get; private set; }
-        public ICommand GenerateCommand { get; private set; }
+        public ICommand SelectFileCommand { get; }
+        public ICommand GenerateCommand { get; }
+        public ICommand ShowListTypesCommand { get; }
+        public ICommand HideListTypesCommand { get; }
 
         #endregion Commands
 
@@ -64,40 +66,16 @@ namespace ViewModel
             set
             {
                 _selectedFileContentType = value;
-                switch (value)
-                {
-                    case FileContentType.MainConstruction:
-                        IsMaterialAvailable = IsStructuralAvailable = true;
-                        break;
-
-                    case FileContentType.Bolts:
-                        IsMaterialAvailable = IsStructuralAvailable = false;
-                        SelectedListType = ListType.Delivery;
-                        break;
-                }
-
                 RaisePropertyChanged();
             }
         }
 
-        public bool IsDeliveryAvailable => true;
-
-        public bool IsMaterialAvailable
+        public bool IsListTypesAvailable
         {
-            get => _isMaterialAvailable;
+            get => _isListTypesAvailable;
             set
             {
-                _isMaterialAvailable = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool IsStructuralAvailable
-        {
-            get => _isStructuralAvailable;
-            set
-            {
-                _isStructuralAvailable = value;
+                _isListTypesAvailable = value;
                 RaisePropertyChanged();
             }
         }
@@ -111,6 +89,10 @@ namespace ViewModel
             GenerateCommand = new Command(Generate);
             SelectedListType = ListType.Delivery;
             SelectedFileContentType = FileContentType.MainConstruction;
+            IsListTypesAvailable = true;
+
+            ShowListTypesCommand = new Command(ShowListTypes);
+            HideListTypesCommand = new Command(HideListTypes);
         }
 
         #region Raise PropertyChanged
@@ -123,6 +105,16 @@ namespace ViewModel
         #endregion
 
         #region Commands methods
+
+        public void ShowListTypes()
+        {
+            IsListTypesAvailable = true;
+        }
+
+        public void HideListTypes()
+        {
+            IsListTypesAvailable = false;
+        }
 
         public void SelectFile()
         {
@@ -167,8 +159,7 @@ namespace ViewModel
         private ListType _selectedListType;
         private FileContentType _selectedFileContentType;
 
-        private bool _isMaterialAvailable;
-        private bool _isStructuralAvailable;
+        private bool _isListTypesAvailable;
 
         #endregion Private stuff
     }
