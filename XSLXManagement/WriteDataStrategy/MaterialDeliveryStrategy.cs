@@ -18,7 +18,8 @@ namespace XLSXManagement.WriteDataStrategy
             int numDataChunks = columns.First().Data.Count;
             int numColumns = columns.Count;
 
-            IEnumerable<string> intColumns = new[] {"Asmbly Pos.", "No."};
+            IEnumerable<string> stringNumberColumns = new[] {"Asmbly Pos.", "No.", "Part"};
+            IEnumerable<string> intColumns = new[] {"Length"};
 
             for (int i = 0; i < numDataChunks - 1; i++)
             {
@@ -37,12 +38,11 @@ namespace XLSXManagement.WriteDataStrategy
 
                         string columnName = columns.ElementAt(c).Name;
 
-                        if (isNumber && !columnName.Contains(TranslateUtils.Translate("Part"))
-                                     && !columnName.Contains(TranslateUtils.Translate("No."))
-                                     && !columnName.Contains(TranslateUtils.Translate("Asmbly Pos."))
-                                     && !columnName.Contains(TranslateUtils.Translate("Length")))
+                        if (isNumber && !stringNumberColumns.Any(column =>
+                                columnName.Equals(TranslateUtils.Translate(column))))
                         {
-                            cell.SetCellValue(SheetUtils.SeparateThousands(entry, true));
+                            cell.SetCellValue(SheetUtils.SeparateThousands(entry,
+                                !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
                         }
                         else
                         {
@@ -73,11 +73,14 @@ namespace XLSXManagement.WriteDataStrategy
                     }
                     else
                     {
+                        string columnName = columns.ElementAt(c).Name;
+
                         bool isNumber = double.TryParse(summary, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
                         if (isNumber)
                         {
-                            cell.SetCellValue(SheetUtils.SeparateThousands(summary, true));
+                            cell.SetCellValue(SheetUtils.SeparateThousands(summary,
+                                !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
                         }
                         else
                         {

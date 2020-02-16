@@ -1,16 +1,28 @@
-﻿using NPOI.SS.UserModel;
+﻿using System.IO;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 namespace XLSXManagement.Utils
 {
     internal class SheetFactory
     {
-        public static ISheet CreateSheet(string title)
+        public static ISheet CreateSheet(string path)
         {
-            IWorkbook workbook = new XSSFWorkbook();
-            ISheet sheet = workbook.CreateSheet(title);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
 
-            return sheet;
+            File.Copy("naglowek.xlsx", path);
+
+            IWorkbook workbook;
+
+            using (FileStream stream = File.OpenRead(path))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            return workbook.GetSheetAt(0);
         }
     }
 }

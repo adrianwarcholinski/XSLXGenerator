@@ -140,6 +140,11 @@ namespace ViewModel
         {
             _selectedTargetPath = Window.SelectWritableFile();
 
+            if (string.IsNullOrEmpty(_selectedTargetPath))
+            {
+                return;
+            }
+
             Task.Run(() =>
             {
                 ListType type = SelectedFileContentType == FileContentType.MainConstruction

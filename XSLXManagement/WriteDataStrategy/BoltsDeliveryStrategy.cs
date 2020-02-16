@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Model;
-using Model.DataModel;
+﻿using Model.DataModel;
 using Model.List;
 using NPOI.SS.UserModel;
-using NPOI.SS.Util;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using XLSXManagement.Utils;
 
 namespace XLSXManagement.WriteDataStrategy

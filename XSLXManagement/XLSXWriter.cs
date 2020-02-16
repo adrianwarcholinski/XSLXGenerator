@@ -3,8 +3,10 @@ using NPOI.SS.UserModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Model;
 using XLSXManagement.Utils;
 using XLSXManagement.WriteDataStrategy;
+using XLSXManagement.WriteHeaderStrategy;
 
 namespace XLSXManagement
 {
@@ -13,12 +15,14 @@ namespace XLSXManagement
         private static ISheet _sheet;
         private static AbstractList _list;
 
-        public static void WriteList(AbstractList list, string path, IXLSXWriteDataStrategy writeDataStrategy)
+        public static void WriteList(AbstractList list, string path, IXLSXWriteDataStrategy writeDataStrategy, IXLSXWriteHeaderStrategy headerStrategy, ListType listType)
         {
             CellStyleFactory.ResetStyles();
 
-            _sheet = SheetFactory.CreateSheet("lista");
+            _sheet = SheetFactory.CreateSheet(path);
             _list = list;
+            
+            headerStrategy.FormatHeader(_list, _sheet, listType);
 
             WriteColumnsNames();
 
@@ -55,8 +59,10 @@ namespace XLSXManagement
 
         private static void WriteWorkbook(string path)
         {
-            using FileStream stream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-            _sheet.Workbook.Write(stream);
+            using (FileStream stream = File.Create(path))
+            {
+                _sheet.Workbook.Write(stream);
+            }
         }
 
         private static void OpenWorkbook(string path)
