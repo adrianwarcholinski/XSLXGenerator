@@ -29,7 +29,7 @@ namespace Model.Extensions
 
         private static List<StringColumn> GetDividedData()
         {
-            List<StringColumn> dividedColumns = GetClonedColumns();
+            List<StringColumn> dividedColumns = ColumnUtils.GetClonedColumns(_list);
             List<StringColumn> originalColumns = _list.Columns;
 
             int numEntries = originalColumns.ElementAt(1).GetLastChunk().Entries.Count;
@@ -58,20 +58,6 @@ namespace Model.Extensions
                 StringColumn currentColumn = columns.ElementAt(columnIndex);
                 currentColumn.Data.Add(new DataChunk());
             }
-        }
-
-        private static List<StringColumn> GetClonedColumns()
-        {
-            List<StringColumn> clonedColumns = new List<StringColumn>();
-            List<StringColumn> oldColumns = _list.Columns;
-            foreach (StringColumn oldColumn in oldColumns)
-            {
-                StringColumn newColumn = new StringColumn(oldColumn.Name);
-                newColumn.Data = new List<DataChunk>();
-                clonedColumns.Add(newColumn);
-            }
-
-            return clonedColumns;
         }
 
         private static void HandleFirstRows()

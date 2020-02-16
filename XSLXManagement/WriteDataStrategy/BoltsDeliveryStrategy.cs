@@ -1,76 +1,81 @@
-﻿using Model.DataModel;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Model;
+using Model.DataModel;
 using Model.List;
 using NPOI.SS.UserModel;
-using System.Collections.Generic;
-using System.Linq;
-using Model.Extensions;
+using NPOI.SS.Util;
+using XLSXManagement.Utils;
 
 namespace XLSXManagement.WriteDataStrategy
 {
     public class BoltsDeliveryStrategy : IXLSXWriteDataStrategy
     {
-        private AbstractList _list;
-
         public void WriteData(AbstractList list, ISheet sheet)
         {
-            _list = list;
+            ICollection<StringColumn> columns = list.Columns;
+            int numDataChunks = columns.First().Data.Count;
+            int numColumns = columns.Count;
 
-            FillRemainingColumns();
-            FixEmptyEntries();
-        }
-
-        private void FillRemainingColumns()
-        {
-            int actualNumEntries = GetNumEntries();
-            List<StringColumn> columns = _list.Columns;
-
-            foreach (StringColumn column in columns)
+            for (int i = 0; i < numDataChunks; i++)
             {
-                FillMissingEntries(column.Data.First().Entries, actualNumEntries);
-            }
-        }
-
-        private void FillMissingEntries(ICollection<string> entries, int actualNumEntries)
-        {
-            int numRemainingEntries = actualNumEntries - entries.Count();
-
-            for (int i = 0; i < numRemainingEntries; i++)
-            {
-                entries.Add(string.Empty);
-            }
-        }
-
-        private int GetNumEntries()
-        {
-            return _list.Columns.First().Data.First().Entries.Count;
-        }
-
-        private void FixEmptyEntries()
-        {
-            ICollection<string> lastColumnEntries = _list.Columns.Last().Data.First().Entries;
-
-            for (int entryIndex = 0; entryIndex < GetNumEntries(); entryIndex++)
-            {
-                string lastColumnEntry = lastColumnEntries.ElementAt(entryIndex);
-                if (string.IsNullOrEmpty(lastColumnEntry))
+                int rowCount = columns.First().Data.ElementAt(i).Entries.Count;
+                for (int r = 0; r < rowCount; r++)
                 {
-                    MoveDataToRightByOneColumn(entryIndex);
+                    IRow row = SheetUtils.CreateRow(sheet);
+                    for (int c = 0; c < numColumns; c++)
+                    {
+                        ICell cell = row.CreateCell(c);
+                        cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle(sheet.Workbook);
+
+                        string entry = columns.ElementAt(c).Data.ElementAt(i).Entries.ElementAt(r);
+                        bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
+                            out double result);
+
+                        string columnName = columns.ElementAt(c).Name;
+                        cell.SetCellValue(entry);
+                    }
                 }
-            }
-        }
 
-        private void MoveDataToRightByOneColumn(int entryIndex)
-        {
-            int numColumns = _list.Columns.Count;
-            for (int columnIndex = numColumns - 2; columnIndex >= 1; columnIndex--)
-            {
-                List<string> leftEntries = _list.Columns.ElementAt(columnIndex).Data.First().Entries;
-                List<string> rightEntries = _list.Columns.ElementAt(columnIndex + 1).Data.First().Entries;
+                if (i == numDataChunks - 1)
+                {
+                    continue;
+                }
 
-                string leftEntry = leftEntries.ElementAt(entryIndex);
+                IRow blankRow = SheetUtils.CreateRow(sheet);
 
-                leftEntries.UpdateElementAt(entryIndex, string.Empty);
-                rightEntries.UpdateElementAt(entryIndex, leftEntry);
+                for (int c = 0; c < numColumns; c++)
+                {
+                    string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
+
+                    ICell cell = blankRow.CreateCell(c);
+                    cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle(sheet.Workbook);
+
+                    // if (string.IsNullOrEmpty(summary) || summary.Contains("Tota") || summary.Contains("for"))
+                    // {
+                    //     emptySummaryCount++;
+                    //     cell.SetCellValue(sumLabel);
+                    // }
+                    // else
+                    // {
+                    //     bool isNumber = double.TryParse(summary, NumberStyles.Any, CultureInfo.InvariantCulture,
+                    //         out double result);
+                    //     if (isNumber)
+                    //     {
+                    //         cell.SetCellValue(SheetUtils.SeparateThousands(summary, true));
+                    //     }
+                    //     else
+                    //     {
+                    //         emptySummaryCount++;
+                    //     }
+                    // }
+                    //
+                    // if (!string.IsNullOrEmpty(summary) && summary.Contains("for") && summary.Length == 3)
+                    // {
+                    //     emptySummaryCount++;
+                    // }
+                }
             }
         }
     }
