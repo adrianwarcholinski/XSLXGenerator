@@ -146,7 +146,7 @@ namespace Model.Extensions
                     string sizeEntry = sizeChunk.Entries.ElementAt(entryIndex);
                     string standardEntry = standardChunk.Entries.ElementAt(entryIndex);
 
-                    sizeEntry = sizeEntry.Replace("BOLT", isHVM(standardEntry) ? "HVM" : "M")
+                    sizeEntry = sizeEntry.Replace("BOLT", IsHVM(standardEntry) ? "HVM" : "M")
                         .Replace("NUT", "Nakrętka M")
                         .Replace("WASHER", "Podkładka")
                         .Replace(".0", "");
@@ -167,7 +167,7 @@ namespace Model.Extensions
             _list.Columns = new List<StringColumn>(new []{sizeColumn, classColumn, quantityColumn, standardColumn});
         }
 
-        private static bool isHVM(string standardEntry)
+        private static bool IsHVM(string standardEntry)
         {
             return standardEntry.Equals("6914");
         }
@@ -196,7 +196,7 @@ namespace Model.Extensions
 
                     if (nameEntry.Equals("BOLT"))
                     {
-                        classEntry = isHVM(standardEntry) ? "10.9" : "8.8";
+                        classEntry = IsHVM(standardEntry) ? "10.9" : "8.8";
                     }
 
                     returnValue.GetLastChunk().Entries.Add(classEntry);

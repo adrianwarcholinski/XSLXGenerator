@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using System;
+using Model;
 using Model.DataModel;
 using Model.List;
 using NPOI.SS.UserModel;
@@ -18,9 +19,6 @@ namespace XLSXManagement.WriteDataStrategy
             int numDataChunks = columns.First().Data.Count;
             int numColumns = columns.Count;
 
-            IEnumerable<string> stringNumberColumns = new[] {"Asmbly Pos.", "No.", "Part"};
-            IEnumerable<string> intColumns = new[] {"Length"};
-
             for (int i = 0; i < numDataChunks - 1; i++)
             {
                 int rowCount = columns.First().Data.ElementAt(i).Entries.Count;
@@ -38,11 +36,35 @@ namespace XLSXManagement.WriteDataStrategy
 
                         string columnName = columns.ElementAt(c).Name;
 
-                        if (isNumber && !stringNumberColumns.Any(column =>
-                                columnName.Equals(TranslateUtils.Translate(column))))
+                        if (isNumber)
                         {
-                            cell.SetCellValue(SheetUtils.SeparateThousands(entry,
-                                !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
+                            // cell.SetCellValue(SheetUtils.SeparateThousands(entry,
+                            //     !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
+                            int decimalPts = columns.ElementAt(c).GetNumDecimalPlaces();
+                            switch (decimalPts)
+                            {
+                                case -1:
+                                    cell.SetCellValue(entry);
+                                    break;
+
+                                case 0:
+                                    cell.CellStyle =
+                                        CellStyleFactory.CreateCenterAlignmentStyle0DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+
+                                case 1:
+                                    cell.CellStyle =
+                                        CellStyleFactory.CreateCenterAlignmentStyle1DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+
+                                default:
+                                    cell.CellStyle =
+                                        CellStyleFactory.CreateCenterAlignmentStyle2DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+                            }
                         }
                         else
                         {
@@ -63,7 +85,7 @@ namespace XLSXManagement.WriteDataStrategy
                 {
                     string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
 
-                    ICell cell = summaryRow.CreateCell(c);
+                    ICell cell = summaryRow.CreateCell(c, CellType.Numeric);
                     cell.CellStyle = summaryStyle;
 
                     if (string.IsNullOrEmpty(summary) || summary.Contains("Tota") || summary.Contains("for"))
@@ -79,8 +101,37 @@ namespace XLSXManagement.WriteDataStrategy
                             out double result);
                         if (isNumber)
                         {
-                            cell.SetCellValue(SheetUtils.SeparateThousands(summary,
-                                !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
+                            int decimalPts = columns.ElementAt(c).GetNumDecimalPlaces();
+                            switch (decimalPts)
+                            {
+                                case -1:
+                                    cell.SetCellValue(summary);
+                                    break;
+
+                                case 0:
+                                    cell.CellStyle = isFinal
+                                        ? CellStyleFactory.CreateFinalSummaryStyle0DecimalPts(sheet.Workbook)
+                                        : CellStyleFactory.CreateSummaryStyle0DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+
+                                case 1:
+                                    cell.CellStyle = isFinal
+                                        ? CellStyleFactory.CreateFinalSummaryStyle1DecimalPts(sheet.Workbook)
+                                        : CellStyleFactory.CreateSummaryStyle1DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+
+                                default:
+                                    cell.CellStyle = isFinal
+                                        ? CellStyleFactory.CreateFinalSummaryStyle2DecimalPts(sheet.Workbook)
+                                        : CellStyleFactory.CreateSummaryStyle2DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(summary, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+                            }
+
+                            // cell.SetCellValue(SheetUtils.SeparateThousands(summary,
+                            //     !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
                         }
                         else
                         {
@@ -98,6 +149,11 @@ namespace XLSXManagement.WriteDataStrategy
                     new CellRangeAddress(sheet.LastRowNum, sheet.LastRowNum, 0, emptySummaryCount - 1);
                 sheet.AddMergedRegion(region);
             }
+        }
+
+        private int GetNumDecimalPoints(string number)
+        {
+            return number.Split(".").Last().Length;
         }
     }
 }

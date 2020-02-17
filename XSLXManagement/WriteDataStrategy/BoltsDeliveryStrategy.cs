@@ -31,8 +31,38 @@ namespace XLSXManagement.WriteDataStrategy
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
 
-                        string columnName = columns.ElementAt(c).Name;
-                        cell.SetCellValue(entry);
+                        if (isNumber)
+                        {
+                            int decimalPts = columns.ElementAt(c).GetNumDecimalPlaces();
+                            switch (decimalPts)
+                            {
+                                case -1:
+                                    cell.SetCellValue(entry);
+                                    break;
+
+                                case 0:
+                                    cell.CellStyle =
+                                        CellStyleFactory.CreateCenterAlignmentStyle0DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+
+                                case 1:
+                                    cell.CellStyle =
+                                        CellStyleFactory.CreateCenterAlignmentStyle1DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+
+                                default:
+                                    cell.CellStyle =
+                                        CellStyleFactory.CreateCenterAlignmentStyle2DecimalPts(sheet.Workbook);
+                                    cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            cell.SetCellValue(entry);
+                        }
                     }
                 }
 
@@ -49,30 +79,6 @@ namespace XLSXManagement.WriteDataStrategy
 
                     ICell cell = blankRow.CreateCell(c);
                     cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle(sheet.Workbook);
-
-                    // if (string.IsNullOrEmpty(summary) || summary.Contains("Tota") || summary.Contains("for"))
-                    // {
-                    //     emptySummaryCount++;
-                    //     cell.SetCellValue(sumLabel);
-                    // }
-                    // else
-                    // {
-                    //     bool isNumber = double.TryParse(summary, NumberStyles.Any, CultureInfo.InvariantCulture,
-                    //         out double result);
-                    //     if (isNumber)
-                    //     {
-                    //         cell.SetCellValue(SheetUtils.SeparateThousands(summary, true));
-                    //     }
-                    //     else
-                    //     {
-                    //         emptySummaryCount++;
-                    //     }
-                    // }
-                    //
-                    // if (!string.IsNullOrEmpty(summary) && summary.Contains("for") && summary.Length == 3)
-                    // {
-                    //     emptySummaryCount++;
-                    // }
                 }
             }
         }
