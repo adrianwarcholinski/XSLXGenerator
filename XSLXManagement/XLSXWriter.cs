@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Model;
+using NPOI.SS.Util;
 using XLSXManagement.Utils;
 using XLSXManagement.WriteDataStrategy;
 using XLSXManagement.WriteHeaderStrategy;
@@ -25,6 +26,18 @@ namespace XLSXManagement
             headerStrategy.FormatHeader(_list, _sheet, listType);
 
             WriteColumnsNames();
+
+            if (listType == ListType.BoltsDelivery)
+            {
+                CellRangeAddress blankRegion =
+                    new CellRangeAddress(_sheet.LastRowNum, _sheet.LastRowNum, _list.Columns.Count - 1, _list.Columns.Count + 1);
+
+                IRow columnsRow = _sheet.GetRow(_sheet.LastRowNum);
+                columnsRow.CreateCell(_list.Columns.Count);
+                columnsRow.CreateCell(_list.Columns.Count + 1);
+                columnsRow.GetCell(_list.Columns.Count + 1).CellStyle = CellStyleFactory.CreateCenterAlignmentStyle(_sheet.Workbook);
+                _sheet.AddMergedRegion(blankRegion);
+            }
 
             writeDataStrategy.WriteData(list, _sheet);
 

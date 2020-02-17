@@ -22,6 +22,8 @@ namespace XLSXManagement.WriteHeaderStrategy
 
                     cell.SetCellValue(newContent);
                 }
+
+                sheet.Workbook.SetSheetName(0, GetListTypeString(listType));
             }
         }
 
@@ -30,8 +32,10 @@ namespace XLSXManagement.WriteHeaderStrategy
             switch (type)
             {
                 case ListType.Delivery:
-                case ListType.BoltsDelivery:
                     return "Lista wysyłkowa";
+
+                case ListType.BoltsDelivery:
+                    return "Lista śrub";
 
                 case ListType.Structural:
                     return "Lista strukturalna";

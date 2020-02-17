@@ -49,6 +49,11 @@ namespace Model.DataModel
                 return 0;
             }
 
+            if (Name.Contains("całkowita"))
+            {
+                return 1;
+            }
+
             return Data.First().Entries.First().Split(".").Last().Trim().Length;
         }
     }

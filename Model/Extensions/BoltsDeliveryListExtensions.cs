@@ -103,6 +103,7 @@ namespace Model.Extensions
                 }
 
                 AddEntry(entryIndex, newColumns);
+
                 lastContentType = entryType;
                 lastStandardEntry = standardEntry;
             }
@@ -135,21 +136,45 @@ namespace Model.Extensions
         {
             StringColumn sizeColumn = ColumnUtils.FindColumn(_list, "Size", out _);
             StringColumn standardColumn = ColumnUtils.FindColumn(_list, "Standard", out _);
+            StringColumn nameColumn = ColumnUtils.FindColumn(_list, "Name", out _);
 
             for (int chunkIndex = 0; chunkIndex < sizeColumn.Data.Count; chunkIndex++)
             {
                 DataChunk sizeChunk = sizeColumn.Data.ElementAt(chunkIndex);
                 DataChunk standardChunk = standardColumn.Data.ElementAt(chunkIndex);
+                DataChunk nameChunk = nameColumn.Data.ElementAt(chunkIndex);
 
                 for (int entryIndex = 0; entryIndex < sizeChunk.Entries.Count; entryIndex++)
                 {
                     string sizeEntry = sizeChunk.Entries.ElementAt(entryIndex);
                     string standardEntry = standardChunk.Entries.ElementAt(entryIndex);
+                    string nameEntry = nameChunk.Entries.ElementAt(entryIndex);
 
                     sizeEntry = sizeEntry.Replace("BOLT", IsHVM(standardEntry) ? "HVM" : "M")
                         .Replace("NUT", "Nakrętka M")
-                        .Replace("WASHER", "Podkładka")
-                        .Replace(".0", "");
+                        .Replace("WASHER", "Podkładka");
+
+                    while (sizeEntry.Contains(".0"))
+                    {
+                        sizeEntry = sizeEntry.Replace(".0", ".");
+                    }
+
+                    sizeEntry = sizeEntry.Replace(".", string.Empty);
+
+                    if (nameEntry.Contains("HILTI"))
+                    {
+                        string sizePrefix = nameEntry.Split(" ").ElementAt(1);
+                        sizeEntry = sizePrefix + " " + sizeEntry;
+
+                        standardChunk.Entries.Insert(entryIndex, "Kotew HILTI");
+                        standardChunk.Entries.RemoveAt(entryIndex + 1);
+                    }
+
+                    if (nameEntry.Contains("ANCHORBAR"))
+                    {
+                        standardChunk.Entries.Insert(entryIndex, "Pręt gwintowany");
+                        standardChunk.Entries.RemoveAt(entryIndex + 1);
+                    }
 
                     sizeChunk.Entries.Insert(entryIndex, sizeEntry);
                     sizeChunk.Entries.RemoveAt(entryIndex + 1);
@@ -163,8 +188,9 @@ namespace Model.Extensions
             StringColumn classColumn = GenerateClassColumn();
             StringColumn quantityColumn = ColumnUtils.FindColumn(_list, "Quantity", out _);
             StringColumn standardColumn = ColumnUtils.FindColumn(_list, "Standard", out _);
+            StringColumn notesColumn = GenerateNotesColumn();
 
-            _list.Columns = new List<StringColumn>(new []{sizeColumn, classColumn, quantityColumn, standardColumn});
+            _list.Columns = new List<StringColumn>(new []{sizeColumn, classColumn, quantityColumn, standardColumn, notesColumn});
         }
 
         private static bool IsHVM(string standardEntry)
@@ -199,7 +225,30 @@ namespace Model.Extensions
                         classEntry = IsHVM(standardEntry) ? "10.9" : "8.8";
                     }
 
+                    if (nameEntry.Contains("HILTI") || nameEntry.Contains("ANCHORBAR"))
+                    {
+                        classEntry = "8.8";
+                    }
+
                     returnValue.GetLastChunk().Entries.Add(classEntry);
+                }
+            }
+
+            return returnValue;
+        }
+
+        private static StringColumn GenerateNotesColumn()
+        {
+            StringColumn returnValue = new StringColumn("Uwagi");
+            returnValue.Data.Clear();
+
+            StringColumn standardColumn = _list.Columns.First();
+            foreach (DataChunk chunk in standardColumn.Data)
+            {
+                returnValue.Data.Add(new DataChunk());
+                foreach (string entry in chunk.Entries)
+                {
+                    returnValue.GetLastChunk().Entries.Add(string.Empty);
                 }
             }
 

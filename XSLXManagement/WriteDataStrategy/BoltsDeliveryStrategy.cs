@@ -4,6 +4,7 @@ using NPOI.SS.UserModel;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using NPOI.SS.Util;
 using XLSXManagement.Utils;
 
 namespace XLSXManagement.WriteDataStrategy
@@ -64,6 +65,18 @@ namespace XLSXManagement.WriteDataStrategy
                             cell.SetCellValue(entry);
                         }
                     }
+
+                    for (int notesIndex = 0; notesIndex < 2; notesIndex++)
+                    {
+                        ICell notesCell = row.CreateCell(numColumns + notesIndex);
+                        // if ()
+                        notesCell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle(sheet.Workbook);
+                    }
+
+                    CellRangeAddress region =
+                        new CellRangeAddress(sheet.LastRowNum, sheet.LastRowNum, numColumns - 1, numColumns + 1);
+                    sheet.AddMergedRegion(region);
+
                 }
 
                 if (i == numDataChunks - 1)
@@ -73,13 +86,15 @@ namespace XLSXManagement.WriteDataStrategy
 
                 IRow blankRow = SheetUtils.CreateRow(sheet);
 
-                for (int c = 0; c < numColumns; c++)
+                for (int c = 0; c < numColumns + 2; c++)
                 {
-                    string summary = columns.ElementAt(c).Data.ElementAt(i).Summary;
-
                     ICell cell = blankRow.CreateCell(c);
-                    cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle(sheet.Workbook);
+                    cell.CellStyle = CellStyleFactory.CreateFinalSummaryStyle(sheet.Workbook);
                 }
+
+                CellRangeAddress blankRegion =
+                    new CellRangeAddress(sheet.LastRowNum, sheet.LastRowNum, numColumns - 1, numColumns + 1);
+                sheet.AddMergedRegion(blankRegion);
             }
         }
     }

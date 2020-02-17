@@ -40,14 +40,9 @@ namespace XLSXManagement.WriteDataStrategy
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
 
-                        string columnName = columns.ElementAt(columnIndex).Name;
 
                         if (isNumber)
                         {
-                            // IEnumerable<string> intColumns = TranslateUtils.GetTranslatedStrings(new[] { "Length" });
-                            // bool isInteger = intColumns.Any(name => columnName.Contains(name));
-                            // cell.SetCellValue(SheetUtils.SeparateThousands(entry, !isInteger));
-
                             int decimalPts = columns.ElementAt(columnIndex).GetNumDecimalPlaces();
                             switch (decimalPts)
                             {
@@ -56,20 +51,17 @@ namespace XLSXManagement.WriteDataStrategy
                                     break;
 
                                 case 0:
-                                    cell.CellStyle = isFirstRow ? CellStyleFactory.CreateSummaryStyle0DecimalPts(sheet.Workbook) :
-                                        CellStyleFactory.CreateCenterAlignmentStyle0DecimalPts(sheet.Workbook);
+                                    cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle0DecimalPts(sheet.Workbook);
                                     cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
                                     break;
 
                                 case 1:
-                                    cell.CellStyle = isFirstRow ? CellStyleFactory.CreateSummaryStyle1DecimalPts(sheet.Workbook) :
-                                        CellStyleFactory.CreateCenterAlignmentStyle1DecimalPts(sheet.Workbook);
+                                    cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle1DecimalPts(sheet.Workbook);
                                     cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
                                     break;
 
                                 default:
-                                    cell.CellStyle = isFirstRow ? CellStyleFactory.CreateSummaryStyle2DecimalPts(sheet.Workbook) :
-                                        CellStyleFactory.CreateCenterAlignmentStyle2DecimalPts(sheet.Workbook);
+                                    cell.CellStyle = CellStyleFactory.CreateCenterAlignmentStyle2DecimalPts(sheet.Workbook);
                                     cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
                                     break;
                             }
@@ -81,7 +73,37 @@ namespace XLSXManagement.WriteDataStrategy
 
                         if (isFirstRow)
                         {
-                            cell.CellStyle = CellStyleFactory.CreateSummaryStyle(sheet.Workbook); ;
+                            if (isNumber)
+                            {
+                                int decimalPts = columns.ElementAt(columnIndex).GetNumDecimalPlaces();
+
+                                switch (decimalPts)
+                                {
+                                    case -1:
+                                        cell.SetCellValue(entry);
+                                        cell.CellStyle = CellStyleFactory.CreateSummaryStyle(sheet.Workbook);
+                                        break;
+
+                                    case 0:
+                                        cell.CellStyle = CellStyleFactory.CreateSummaryStyle0DecimalPts(sheet.Workbook);
+                                        cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                        break;
+
+                                    case 1:
+                                        cell.CellStyle = CellStyleFactory.CreateSummaryStyle1DecimalPts(sheet.Workbook);
+                                        cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                        break;
+
+                                    default:
+                                        cell.CellStyle = CellStyleFactory.CreateSummaryStyle2DecimalPts(sheet.Workbook);
+                                        cell.SetCellValue(double.Parse(entry, NumberStyles.Any, CultureInfo.InvariantCulture));
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                cell.CellStyle = CellStyleFactory.CreateSummaryStyle(sheet.Workbook);
+                            }
                         }
                     }
                 }
