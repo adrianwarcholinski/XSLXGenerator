@@ -9,6 +9,7 @@ namespace Model.DataModel
         public string No { get; }
         private static readonly string NO_NAME_1 = "No";
         private static readonly string NO_NAME_2 = "PROJECT NUMBER";
+        private static readonly string NO_NAME_3 = "Project";
 
         public string Title { get; }
         private static readonly string TITLE_NAME = "TITLE";
@@ -35,6 +36,11 @@ namespace Model.DataModel
                     No = line.Split(NO_NAME_2 + ":").Last().Split("  ").First().Trim();
                 }
 
+                if (line.Contains(NO_NAME_3))
+                {
+                    No = line.Split(NO_NAME_3 + ":").Last().Split("  ", StringSplitOptions.RemoveEmptyEntries).First().Trim();
+                }
+
                 if (line.Contains(TITLE_NAME))
                 {
                     Title = line.Split(TITLE_NAME + ":").Last().Split("  ").First().Trim();
@@ -47,7 +53,7 @@ namespace Model.DataModel
 
                 if (line.Contains(DATE_NAME))
                 {
-                    Date = line.Split(DATE_NAME + ":").Last().Split("  ").First().Trim();
+                    Date = line.Split(DATE_NAME + ":").Last().Split("  ", StringSplitOptions.RemoveEmptyEntries).First().Trim();
                 }
             }
         }

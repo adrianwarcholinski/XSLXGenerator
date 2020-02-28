@@ -18,7 +18,7 @@ namespace Model.List
                 {
                     case ContentType.Header:
                     {
-                        Header = new Header(content);
+                        Header = new Header(chunk);
                         break;
                     }
 
@@ -39,8 +39,6 @@ namespace Model.List
                     }
                 }
             }
-
-            Header = new Header(content);
         }
 
         protected override void InitColumns(string content)
