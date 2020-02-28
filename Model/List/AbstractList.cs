@@ -28,7 +28,7 @@ namespace Model.List
 
         protected virtual IEnumerable<string> SplitData(string data)
         {
-            string[] chunksByHyphen = data.Split("-", StringSplitOptions.RemoveEmptyEntries);
+            string[] chunksByHyphen = data.Split("--", StringSplitOptions.RemoveEmptyEntries);
 
             ICollection<string> chunksByEqualSign = new List<string>();
 
