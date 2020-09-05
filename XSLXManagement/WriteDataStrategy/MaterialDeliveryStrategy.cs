@@ -1,6 +1,4 @@
-﻿using System;
-using Model;
-using Model.DataModel;
+﻿using Model.DataModel;
 using Model.List;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
@@ -13,11 +11,18 @@ namespace XLSXManagement.WriteDataStrategy
 {
     internal class MaterialDeliveryStrategy : IXLSXWriteDataStrategy
     {
+
+        private int _firstDataRow;
+        private int _lastDataRow;
+        private int _lastDataColumn;
+
         public void WriteData(AbstractList list, ISheet sheet)
         {
             ICollection<StringColumn> columns = list.Columns;
             int numDataChunks = columns.First().Data.Count;
             int numColumns = columns.Count;
+
+            _lastDataColumn = numColumns - 1;
 
             for (int i = 0; i < numDataChunks - 1; i++)
             {
@@ -25,6 +30,10 @@ namespace XLSXManagement.WriteDataStrategy
                 for (int r = 0; r < rowCount; r++)
                 {
                     IRow row = SheetUtils.CreateRow(sheet);
+                    if (i == 0 && r == 0)
+                    {
+                        _firstDataRow = row.RowNum;
+                    }
                     for (int c = 0; c < numColumns; c++)
                     {
                         ICell cell = row.CreateCell(c);
@@ -34,12 +43,8 @@ namespace XLSXManagement.WriteDataStrategy
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
 
-                        string columnName = columns.ElementAt(c).Name;
-
                         if (isNumber)
                         {
-                            // cell.SetCellValue(SheetUtils.SeparateThousands(entry,
-                            //     !intColumns.Any(column => columnName.Contains(TranslateUtils.Translate(column)))));
                             int decimalPts = columns.ElementAt(c).GetNumDecimalPlaces();
                             switch (decimalPts)
                             {
@@ -144,16 +149,16 @@ namespace XLSXManagement.WriteDataStrategy
                         emptySummaryCount++;
                     }
                 }
+                
 
                 CellRangeAddress region =
                     new CellRangeAddress(sheet.LastRowNum, sheet.LastRowNum, 0, emptySummaryCount - 1);
                 sheet.AddMergedRegion(region);
             }
-        }
-
-        private int GetNumDecimalPoints(string number)
-        {
-            return number.Split(".").Last().Length;
+            
+            _lastDataRow = sheet.LastRowNum;
+            
+            BorderDrawer.drawBorders(sheet, _firstDataRow, _lastDataRow, _lastDataColumn);
         }
     }
 }

@@ -11,11 +11,17 @@ namespace XLSXManagement.WriteDataStrategy
 {
     public class BoltsDeliveryStrategy : IXLSXWriteDataStrategy
     {
+        private int _firstDataRow;
+        private int _lastDataRow;
+        private int _lastDataColumn;
+
         public void WriteData(AbstractList list, ISheet sheet)
         {
             ICollection<StringColumn> columns = list.Columns;
             int numDataChunks = columns.First().Data.Count;
             int numColumns = columns.Count;
+            
+            _lastDataColumn = numColumns + 1;
 
             for (int i = 0; i < numDataChunks; i++)
             {
@@ -23,6 +29,10 @@ namespace XLSXManagement.WriteDataStrategy
                 for (int r = 0; r < rowCount; r++)
                 {
                     IRow row = SheetUtils.CreateRow(sheet);
+                    if (i == 0 && r == 0)
+                    {
+                        _firstDataRow = row.RowNum;
+                    }
                     for (int c = 0; c < numColumns; c++)
                     {
                         ICell cell = row.CreateCell(c);
@@ -96,6 +106,10 @@ namespace XLSXManagement.WriteDataStrategy
                     new CellRangeAddress(sheet.LastRowNum, sheet.LastRowNum, numColumns - 1, numColumns + 1);
                 sheet.AddMergedRegion(blankRegion);
             }
+            
+            _lastDataRow = sheet.LastRowNum;
+                
+            BorderDrawer.drawBorders(sheet, _firstDataRow, _lastDataRow, _lastDataColumn);
         }
     }
 }

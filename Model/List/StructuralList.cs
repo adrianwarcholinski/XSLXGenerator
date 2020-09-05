@@ -10,6 +10,8 @@ namespace Model.List
     {
         public string WeightSummary { get; }
 
+        private int _partColumnNo;
+
         public StructuralList(string content)
         {
             IEnumerable<string> dataChunks = SplitData(content);
@@ -73,17 +75,66 @@ namespace Model.List
                 }
             }
         }
+        
+        protected virtual void AppendData(string content)
+        {
+            string[] lines = content.Split("\n", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+                if (trimmedLine == "")
+                {
+                    continue;
+                }
+
+                string[] entries = SplitLine(line);
+                for (int i = 0; i < entries.Length; i++)
+                {
+                    string entry = entries[i];
+                    Columns.ElementAt(i).GetLastChunk().AddEntry(entry);
+                }
+            }
+        }
+
+        private string[] SplitLine(string line)
+        {
+            string[] tmp = line.Split("  ", StringSplitOptions.RemoveEmptyEntries);
+            List<string> entries = new List<string>();
+            tmp.ToList().ForEach(e => entries.Add(e));
+
+            int requiredColumnsCount = 6;
+            if (entries.Count < requiredColumnsCount)
+            {
+                List<string> correctedEntries = new List<string>();
+                for (int i = 0; i < entries.Count; i++)
+                {
+                    string[] tmp2 = entries.ElementAt(i).Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    if (tmp2.Length > 1)
+                    {
+                        tmp2[0] = " " + tmp2[0];
+                    }
+                    tmp2.ToList().ForEach(e => correctedEntries.Add(e));
+                }
+
+                entries = correctedEntries;
+            }
+            return entries.ToArray();
+        }
 
         protected override void InitColumns(string content)
         {
             Columns = new List<StringColumn>();
             string[] columns = content.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            foreach (string column in columns)
+            for (int i = 0; i < columns.Length; i++)
             {
-                string trimedColumn = column.Trim();
-                if (!string.IsNullOrEmpty(trimedColumn))
+                string trimmedColumn = columns[i].Trim();
+                if (!string.IsNullOrEmpty(trimmedColumn))
                 {
-                    Columns.Add(new StringColumn(TranslateUtils.Translate(trimedColumn)));
+                    if (trimmedColumn == TranslateUtils.Translate("Part"))
+                    {
+                        _partColumnNo = i;
+                    }
+                    Columns.Add(new StringColumn(TranslateUtils.Translate(trimmedColumn)));
                 }
             }
         }

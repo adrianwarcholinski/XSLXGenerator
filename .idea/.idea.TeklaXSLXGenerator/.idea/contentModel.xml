@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\adria\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\adria\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_TeklaXSLXGenerator.852145642.00" t="ExcludeRecursive" />
+    <e p="F:\Wlasne_projekty\C_Sharp\XSLXGenerator" t="IncludeFlat">
+      <e p="FileManagement" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="FileManagement.csproj" t="IncludeRecursive" />
+        <e p="ListReader.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="FileManagement.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Model" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BoltsDeliveryContentType.cs" t="Include" />
+        <e p="ColumnUtils.cs" t="Include" />
+        <e p="ContentType.cs" t="Include" />
+        <e p="DataModel" t="Include">
+          <e p="DataChunk.cs" t="Include" />
+          <e p="Header.cs" t="Include" />
+          <e p="StringColumn.cs" t="Include" />
+        </e>
+        <e p="Extensions" t="Include">
+          <e p="BoltsDeliveryListExtensions.cs" t="Include" />
+          <e p="DeliveryListExtensions.cs" t="Include" />
+          <e p="ListExtensions.cs" t="Include" />
+          <e p="StructuralListExtensions.cs" t="Include" />
+        </e>
+        <e p="List" t="Include">
+          <e p="AbstractList.cs" t="Include" />
+          <e p="BoltsDeliveryList.cs" t="Include" />
+          <e p="StructuralList.cs" t="Include" />
+          <e p="TeklaList.cs" t="Include" />
+        </e>
+        <e p="ListType.cs" t="Include" />
+        <e p="Model.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Model.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="TranslateUtils.cs" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="TeklaXSLXGenerator.sln" t="IncludeFlat" />
+      <e p="View" t="IncludeRecursive">
+        <e p="App.xaml" t="Include" />
+        <e p="App.xaml.cs" t="Include" />
+        <e p="AssemblyInfo.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="EnumBoolConverter.cs" t="Include" />
+        <e p="MainWindow.xaml" t="Include" />
+        <e p="MainWindow.xaml.cs" t="Include" />
+        <e p="obfuscar.xml" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="App.g.cs" t="Include" />
+              <e p="GeneratedInternalTypeHelper.g.cs" t="Include" />
+              <e p="MainWindow.g.cs" t="Include" />
+              <e p="View.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="View.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="ViewModel" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Command.cs" t="Include" />
+        <e p="FileContentType.cs" t="Include" />
+        <e p="IWindow.cs" t="Include" />
+        <e p="MyViewModel.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="ViewModel.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="ViewModel.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="XSLXManagement" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="XLSXManagement.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Utils" t="Include">
+          <e p="BorderDrawer.cs" t="Include" />
+          <e p="CellStyleFactory.cs" t="Include" />
+          <e p="FontFactory.cs" t="Include" />
+          <e p="SheetFactory.cs" t="Include" />
+          <e p="SheetUtils.cs" t="Include" />
+        </e>
+        <e p="WriteDataStrategy" t="Include">
+          <e p="BoltsDeliveryStrategy.cs" t="Include" />
+          <e p="IXLSXWriteDataStrategy.cs" t="Include" />
+          <e p="MaterialDeliveryStrategy.cs" t="Include" />
+          <e p="StructuralStrategy.cs" t="Include" />
+        </e>
+        <e p="WriteHeaderStrategy" t="Include">
+          <e p="HeaderStrategy.cs" t="Include" />
+          <e p="IXLSXWriteHeaderStrategy.cs" t="Include" />
+        </e>
+        <e p="XLSXManagement.csproj" t="IncludeRecursive" />
+        <e p="XLSXWriter.cs" t="Include" />
+        <e p="XLSXWriterSwitcher.cs" t="Include" />
+      </e>
+    </e>
+  </component>
+</project>

@@ -70,6 +70,7 @@ namespace Model.List
             }
         }
 
+        [Obsolete]
         protected void AppendSummary(string content)
         {
             string[] lines = content.Split("\n", StringSplitOptions.RemoveEmptyEntries);

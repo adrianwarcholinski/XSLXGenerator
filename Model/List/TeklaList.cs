@@ -1,5 +1,7 @@
-﻿using Model.DataModel;
+﻿using System;
+using Model.DataModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.List
 {
@@ -41,6 +43,26 @@ namespace Model.List
                         AppendSummary(chunk);
                         break;
                     }
+                }
+            }
+        }
+        
+        protected virtual void AppendData(string content)
+        {
+            string[] lines = content.Split("\n", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+                if (trimmedLine == "")
+                {
+                    continue;
+                }
+
+                string[] entries = line.Split("  ", StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < entries.Length; i++)
+                {
+                    string entry = entries[i];
+                    Columns.ElementAt(i).GetLastChunk().AddEntry(entry);
                 }
             }
         }

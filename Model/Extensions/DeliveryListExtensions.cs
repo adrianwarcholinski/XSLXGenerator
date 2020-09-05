@@ -59,7 +59,7 @@ namespace Model.Extensions
         private static void CalculateTotalWeightSummary()
         {
             DataChunk data = _totalWeightColumn.Data.First();
-            data.Summary = data.Entries.Sum(e => double.Parse(e, NumberStyles.Any, CultureInfo.InvariantCulture)).ToString().Replace(",", ".");
+            data.Summary = _weightColumn.Data.ElementAt(0).Summary;
             _weightColumn.Data.First().Summary = null;
         }
 

@@ -1,8 +1,10 @@
 ﻿using Model;
 using Model.DataModel;
 using Model.List;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,13 +14,17 @@ namespace XLSXManagement.WriteDataStrategy
 {
     internal class StructuralStrategy : IXLSXWriteDataStrategy
     {
+        private int _firstDataRow;
+        private int _lastDataRow;
+        private int _lastDataColumn;
+        
         public void WriteData(AbstractList list, ISheet sheet)
         {
             ICollection<StringColumn> columns = list.Columns;
             int numDataChunks = columns.First().Data.Count;
             int numColumns = columns.Count;
-
-            IEnumerable<string> nonDividableColumns = TranslateUtils.GetTranslatedStrings(new[] { "Assembly", "Part", "No." });
+            
+            _lastDataColumn = numColumns - 1;
 
             for (int chunkIndex = 0; chunkIndex < numDataChunks; chunkIndex++)
             {
@@ -26,6 +32,10 @@ namespace XLSXManagement.WriteDataStrategy
                 for (int entryIndex = 0; entryIndex < numEntries; entryIndex++)
                 {
                     IRow row = SheetUtils.CreateRow(sheet);
+                    if (chunkIndex == 0 && entryIndex == 0)
+                    {
+                        _firstDataRow = row.RowNum;
+                    }
 
                     string assemblyEntry = columns.First().Data.ElementAt(chunkIndex).Entries.ElementAt(entryIndex);
                     bool isFirstRow = !string.IsNullOrEmpty(assemblyEntry);
@@ -39,7 +49,6 @@ namespace XLSXManagement.WriteDataStrategy
 
                         bool isNumber = double.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture,
                             out double result);
-
 
                         if (isNumber)
                         {
@@ -156,7 +165,12 @@ namespace XLSXManagement.WriteDataStrategy
 
             CellRangeAddress region =
                 new CellRangeAddress(sheet.LastRowNum, sheet.LastRowNum, 0, emptySummaryCount - 1);
+
             sheet.AddMergedRegion(region);
+            
+            _lastDataRow = sheet.LastRowNum;
+            
+            BorderDrawer.drawBorders(sheet, _firstDataRow, _lastDataRow, _lastDataColumn);
         }
     }
 }

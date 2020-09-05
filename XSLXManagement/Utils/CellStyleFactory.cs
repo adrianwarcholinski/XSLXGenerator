@@ -142,7 +142,6 @@ namespace XLSXManagement.Utils
 
             return _summaryStyle0DecimalPts;
         }
-
         public static ICellStyle CreateSummaryStyle1DecimalPts(IWorkbook workbook)
         {
             if (_summaryStyle1DecimalPts != null)
